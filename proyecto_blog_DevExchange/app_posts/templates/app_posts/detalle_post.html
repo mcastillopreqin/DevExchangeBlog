@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- El título de la página usa el título del post específico -->
+    <title>{{ post.titulo }}</title>
+    <!-- Opcional: Enlazar a Bootstrap para un mejor estilo -->
+    <link href="cdn.jsdelivr.net" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+
+    <div class="container mt-5">
+        
+        <!-- Botón para regresar a la lista de posts (debes definir la URL 'lista_posts' en urls.py) -->
+        <div class="mb-4">
+            <a href="{% url 'lista_posts' %}" class="btn btn-secondary">← Volver a la lista de publicaciones</a>
+        </div>
+
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <!-- Título principal de la publicación -->
+                <h1 class="card-title mb-3">{{ post.titulo }}</h1>
+
+                <!-- Metadatos de la publicación -->
+                <p class="text-muted border-bottom pb-2">
+                    Publicado por <strong>{{ post.autor.get_full_name|default:post.autor.username }}</strong>
+                    el {{ post.fecha_publicacion|date:"l, F d, Y \a\l\a\s H:i" }}
+                </p>
+
+                <!-- Contenido completo de la publicación -->
+                <div class="card-text mb-4 contenido-post">
+                    <!-- Usamos el filtro linebreaksbr para respetar los saltos de línea del TextField -->
+                    {{ post.contenido|linebreaksbr }}
+                </div>
+
+                <!-- Sección de Likes, Votos y Etiquetas -->
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                    <div class="info-interaccion">
+                        <!-- Usa las propiedades definidas en tu modelo -->
+                        <span class="badge bg-primary fs-6">
+                            Likes: {{ post.total_likes }}
+                        </span>
+                        <span class="badge bg-info text-dark fs-6">
+                            Votos Totales: {{ post.total_votos }}
+                        </span>
+                    </div>
+
+                    <div class="etiquetas">
+                        <!-- Muestra las etiquetas asociadas al post -->
+                        <strong>Etiquetas:</strong>
+                        {% for etiqueta in post.etiqueta.all %}
+                            <span class="badge bg-light text-secondary border">{{ etiqueta.nombre }}</span>
+                        {% empty %}
+                            <small class="text-muted">Sin etiquetas</small>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Opcional: Área para botones de interacción (Like, Votar) -->
+                <!-- 
+                Si quieres añadir funcionalidad de likes o votos, aquí irían tus formularios 
+                o enlaces que apunten a las vistas correspondientes (ej: /like/<int:post_id>/)
+                -->
+                <!-- <a href="{% url 'like_post' post.pk %}" class="btn btn-outline-danger mt-3">Dar Like</a> -->
+
+            </div>
+        </div>
+
+        <!-- Opcional: Sección para comentarios (si implementas esa funcionalidad) -->
+        <div class="mt-5">
+            <h3>Comentarios</h3>
+            <!-- Aquí iría el bucle de comentarios si los tienes -->
+            <p>Aún no hay comentarios.</p>
+        </div>
+
+    </div>
+
+    <!-- Opcional: Script de Bootstrap -->
+    <script src="cdn.jsdelivr.net" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1ufNU7groP5y1" crossorigin="anonymous"></script>
+</body>
+</html>

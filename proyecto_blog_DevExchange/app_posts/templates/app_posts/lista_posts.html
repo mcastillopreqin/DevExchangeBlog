@@ -1,0 +1,87 @@
+<h1>test post</h1>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Publicaciones</title>
+    <!-- Opcional: Enlazar a Bootstrap o tu propio CSS para un mejor estilo -->
+    <link href="cdn.jsdelivr.net" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Publicaciones Recientes</h1>
+       <h2>{{ post.titulo }}</h2>
+        <!-- Itera sobre la lista de posts proporcionada por la vista de Django -->
+        {% for post in posts %}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <!-- Título de la publicación -->
+                    <h2 class="card-title">
+                        <!-- Enlace a la vista de detalle del post (debes definir la URL 'detalle_post' en urls.py) -->
+                        <a href="{% url 'detalle_post' post.pk %}" class="text-decoration-none">{{ post.titulo }}</a>
+                    </h2>
+
+                    <!-- Información del autor y fecha -->
+                    <p class="card-subtitle mb-2 text-muted">
+                        Publicado por {{ post.autor.get_full_name|default:post.autor.username }} 
+                        el {{ post.fecha_publicacion|date:"F d, Y" }}
+                    </p>
+
+                    <!-- Resumen del contenido (primeros 200 caracteres para la lista) -->
+                    <p class="card-text">{{ post.contenido|truncatechars:200 }}</p>
+
+                    <!-- Metadatos adicionales: Likes, Votos, Etiquetas y Estado -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <!-- Usa las propiedades definidas en tu modelo -->
+                            Likes: <strong>{{ post.total_likes }}</strong> | 
+                            Votos: <strong>{{ post.total_votos }}</strong> |
+                            Estado: <span class="badge {% if post.estado == 'publicado' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ post.get_estado_display }}</span>
+                        </small>
+                        
+                        <!-- Muestra las etiquetas asociadas al post -->
+                        <div>
+                            {% for etiqueta in post.etiqueta.all %}
+                                <!-- Enlaza a una vista de filtro por etiqueta si lo deseas -->
+                                <span class="badge bg-info text-dark">{{ etiqueta.nombre }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Enlace para leer más -->
+                    <a href="{% url 'detalle_post' post.pk %}" class="btn btn-primary mt-3">Leer más</a>
+
+                </div>
+            </div>
+        {% empty %}
+            <!-- Mensaje si no hay publicaciones disponibles -->
+            <div class="alert alert-info" role="alert">
+                Aún no hay publicaciones disponibles.
+            </div>
+        {% endfor %}
+
+        <!-- Opcional: Paginación si tu vista utiliza un Paginator -->
+        {% if is_paginated %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                    {% endif %}
+                    <li class="page-item active"><a class="page-link" href="#">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    </div>
+
+    <!-- Opcional: Script de Bootstrap -->
+    <script src="cdn.jsdelivr.net" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1ufNU7groP5y1" crossorigin="anonymous"></script>
+</body>
+</html>
+<h2>{{ post.titulo }}</h2>
