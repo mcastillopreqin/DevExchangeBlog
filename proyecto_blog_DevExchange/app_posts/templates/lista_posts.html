@@ -38,7 +38,7 @@
                         <small class="text-muted">
                             <!-- Usa las propiedades definidas en tu modelo -->
                             Likes: <strong>{{ post.total_likes }}</strong> | 
-                            Votos: <strong>{{ post.total_votos }}</strong> |
+                          
                             Estado: <span class="badge {% if post.estado == 'publicado' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ post.get_estado_display }}</span>
                         </small>
                         
@@ -84,4 +84,3 @@
     <script src="cdn.jsdelivr.net" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1ufNU7groP5y1" crossorigin="anonymous"></script>
 </body>
 </html>
-<h2>{{ post.titulo }}</h2>

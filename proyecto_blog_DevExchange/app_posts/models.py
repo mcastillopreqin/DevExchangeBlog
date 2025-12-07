@@ -38,6 +38,8 @@ class Post(models.Model):
     creado = models.DateTimeField(auto_now_add=True)
     fecha_publicacion = models.DateTimeField(default=timezone.now, blank=True, null=True)
     imagen = models.ImageField(upload_to='post_images/', blank=True, null=True)
+    voto_totales = models.ManyToManyField(User, through='Voto', related_name='voted_posts', blank=True)
+    
     ESTADO_OPCIONES = (
         ('borrador', 'Borrador'),
         ('publicado', 'Publicado'),
@@ -56,7 +58,7 @@ class Post(models.Model):
     @property
     def total_votos(self):
         # Propiedad para obtener el total de votos (positivos - negativos)
-        return self.votos.filter(tipo_voto=Voto.UPVOTE).count() - self.votos.filter(tipo_voto=Voto.DOWNVOTE).count()
+        return self.votos.filter(tipo_voto=Voto.UPVOTO).count() - self.votos.filter(tipo_voto=Voto.DOWNVOTO).count()
 
 
     def __str__(self):
@@ -75,7 +77,7 @@ class Voto(models.Model):
         (DOWNVOTO, 'Downvote'),
     )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='votos')
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='votes')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='votos')
     tipo_voto = models.SmallIntegerField(choices=TIPO_VOTOS)
     fecha_voto = models.DateTimeField(default=timezone.now)
 

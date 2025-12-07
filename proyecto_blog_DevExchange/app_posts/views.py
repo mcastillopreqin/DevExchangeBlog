@@ -7,15 +7,20 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.db import IntegrityError
-from .models import Post, Voto, Etiqueta
+from .models import Post, Voto, Etiqueta, Comentario
+
+def inicio(request):
+    return render(request, 'inicio.html')
 
 def lista_posts(request):        
     posts = Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')
     return render(request, 'lista_posts.html', {'posts': posts})
 
 def detalle_post(request, post_id):
+    comentarios = get_object_or_404(Comentario, post_id=post_id)
     post = get_object_or_404(Post, id=post_id, estado='publicado')
-    return render(request, 'detalle_post.html', {'post': post})
+    return render(request, 'detalle_post.html', {'post': post, 'comentarios': comentarios})
+
 
 @login_required
 @require_POST  # Solo permite peticiones POST a esta vista
