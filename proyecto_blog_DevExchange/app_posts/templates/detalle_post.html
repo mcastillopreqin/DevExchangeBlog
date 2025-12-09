@@ -1,12 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- El título de la página usa el título del post específico -->
-    <title>{{ post.titulo }}</title>
-    <!-- Opcional: Enlazar a Bootstrap para un mejor estilo -->
-    <link href="cdn.jsdelivr.net" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>{{ post.titulo }}</title>       
 </head>
 <body>
 
@@ -41,6 +41,43 @@
                         <span class="badge bg-primary fs-6">
                             Likes: {{ post.total_likes }}
                         </span>
+                        <h2>{{ post.titulo }}</h2>
+<p>Total de Votos: <span id="contador-votos-{{ post.id }}">{{ post.total_votos }}</span></p>
+
+<!-- Botones de voto -->
+{% if user.is_authenticated %}
+    <button onclick="handleVote({{ post.id }}, 1)" class="vote-btn upvote-btn">▲ Upvoto</button>
+    <button onclick="handleVote({{ post.id }}, -1)" class="vote-btn downvote-btn">▼ Downvoto</button>
+{% else %}
+    <p>Inicia sesión para votar.</p>
+{% endif %}
+
+<!-- Incluir jQuery o usar Fetch API para la petición AJAX -->
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+<script>
+function handleVote(postId, tipoVoto) {
+    // Es crucial incluir el token CSRF para peticiones POST en Django
+    var csrftoken = "{{ csrf_token }}"; 
+
+    $.ajax({
+        type: 'POST',
+        url: `/post/${postId}/voto/${tipoVoto}/`,
+        headers: { 'X-CSRFToken': csrftoken },
+        success: function(response) {
+            // Actualiza el contador en la página con la respuesta del servidor
+            $(`#contador-votos-${postId}`).text(response.total_votos);
+            console.log(response.message);
+        },
+        error: function(response) {
+            console.error("Error votando:", response.responseJSON.message);
+            alert("Hubo un error al votar.");
+        }
+    });
+}
+</script>
                         <span class="badge bg-info text-dark fs-6">
                             Votos Totales: {{ post.total_votos }}
                         </span>
@@ -76,7 +113,6 @@
 
     </div>
 
-    <!-- Opcional: Script de Bootstrap -->
-    <script src="cdn.jsdelivr.net" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1ufNU7groP5y1" crossorigin="anonymous"></script>
+   
 </body>
 </html>

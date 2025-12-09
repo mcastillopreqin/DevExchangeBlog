@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from .models import Post, Voto, Etiqueta, Comentario
 
 def inicio(request):
-    return render(request, 'inicio.html')
+    return render(request, 'lista_posts.html')
 
 def lista_posts(request):        
     posts = Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')

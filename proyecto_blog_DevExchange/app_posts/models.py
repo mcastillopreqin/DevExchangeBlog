@@ -37,7 +37,7 @@ class Post(models.Model):
     etiqueta = models.ManyToManyField(Etiqueta, related_name='posts')
     creado = models.DateTimeField(auto_now_add=True)
     fecha_publicacion = models.DateTimeField(default=timezone.now, blank=True, null=True)
-    imagen = models.ImageField(upload_to='post_images/', blank=True, null=True)
+    imagen = models.ImageField(upload_to='media/img', blank=True, null=True)
     voto_totales = models.ManyToManyField(User, through='Voto', related_name='voted_posts', blank=True)
     
     ESTADO_OPCIONES = (

@@ -1,18 +1,9 @@
-<h1>test post</h1>
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Publicaciones</title>
-    <!-- Opcional: Enlazar a Bootstrap o tu propio CSS para un mejor estilo -->
-    <link href="cdn.jsdelivr.net" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
-<body>
+{% block contenido  %}
 
     <div class="container mt-5">
-        <h1 class="mb-4">Publicaciones Recientes</h1>
+        <h1 class="mb-4">Lista de Publicaciones</h1>
        <h2>{{ post.titulo }}</h2>
         <!-- Itera sobre la lista de posts proporcionada por la vista de Django -->
         {% for post in posts %}
@@ -79,8 +70,5 @@
         {% endif %}
 
     </div>
-
-    <!-- Opcional: Script de Bootstrap -->
-    <script src="cdn.jsdelivr.net" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1ufNU7groP5y1" crossorigin="anonymous"></script>
-</body>
-</html>
+  
+{% endblock contenido %} 
