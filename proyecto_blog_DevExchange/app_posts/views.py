@@ -8,18 +8,37 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.db import IntegrityError
 from .models import Post, Voto, Etiqueta, Comentario
-
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
+from django.urls import reverse_lazy
 def inicio(request):
-    return render(request, 'lista_posts.html')
+    return render(request, 'lista_posts.html', {'posts': Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')})
 
 def lista_posts(request):        
     posts = Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')
     return render(request, 'lista_posts.html', {'posts': posts})
 
+# class PostsListView(ListView):
+#     model = Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')
+#     template_name = "app_posts/listar_posts.html"
+#     context_object_name = "posts"
+# class PostDetailView(DetailView):
+#     model = Post
+#     template_name = 'detalle_post.html'
+#     # El nombre de la variable en el contexto será 'post' por defecto, 
+#     # que es lo que espera la plantilla que te di anteriormente.
+
+#     # Opcional: Sobrescribir el queryset para solo mostrar posts publicados
+#     def get_queryset(self):
+#         # Asegura que solo se puedan ver los posts que estén en estado 'publicado'
+#         return Post.objects.filter(estado='publicado')
+        
 def detalle_post(request, post_id):
-    comentarios = get_object_or_404(Comentario, post_id=post_id)
-    post = get_object_or_404(Post, id=post_id, estado='publicado')
-    return render(request, 'detalle_post.html', {'post': post, 'comentarios': comentarios})
+        #comentarios = get_object_or_404(Comentario, post_id=post_id)
+        post = get_object_or_404(Post, id=post_id, estado='publicado')
+        comentarios = post.comments.filter(is_active=True, parent__isnull=True)
+        return render(request, 'detalle_post.html', {'post': post , 'comentarios': comentarios}) 
+
+
 
 
 @login_required

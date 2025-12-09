@@ -1,118 +1,148 @@
 {% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- El título de la página usa el título del post específico -->
-    <title>{{ post.titulo }}</title>       
-</head>
-<body>
+{% block contenido %}
 
     <div class="container mt-5">
         
-        <!-- Botón para regresar a la lista de posts (debes definir la URL 'lista_posts' en urls.py) -->
         <div class="mb-4">
             <a href="{% url 'lista_posts' %}" class="btn btn-secondary">← Volver a la lista de publicaciones</a>
         </div>
 
         <div class="card shadow-lg">
             <div class="card-body">
-                <!-- Título principal de la publicación -->
                 <h1 class="card-title mb-3">{{ post.titulo }}</h1>
 
-                <!-- Metadatos de la publicación -->
                 <p class="text-muted border-bottom pb-2">
                     Publicado por <strong>{{ post.autor.get_full_name|default:post.autor.username }}</strong>
                     el {{ post.fecha_publicacion|date:"l, F d, Y \a\l\a\s H:i" }}
                 </p>
 
-                <!-- Contenido completo de la publicación -->
                 <div class="card-text mb-4 contenido-post">
-                    <!-- Usamos el filtro linebreaksbr para respetar los saltos de línea del TextField -->
                     {{ post.contenido|linebreaksbr }}
                 </div>
 
-                <!-- Sección de Likes, Votos y Etiquetas -->
-                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                    <div class="info-interaccion">
-                        <!-- Usa las propiedades definidas en tu modelo -->
-                        <span class="badge bg-primary fs-6">
-                            Likes: {{ post.total_likes }}
-                        </span>
-                        <h2>{{ post.titulo }}</h2>
-<p>Total de Votos: <span id="contador-votos-{{ post.id }}">{{ post.total_votos }}</span></p>
+                <div class="d-flex align-items-center mt-4 pt-3 border-top mb-3">
+                    
+                    {% if user.is_authenticated %}
+                        <div class="d-flex align-items-center me-4">
+                            <button 
+                                onclick="handleVote({{ post.id }}, 1)" 
+                                class="btn {% if user_vote == 1 %}btn-success{% else %}btn-outline-success{% endif %} btn-sm me-2 vote-btn"
+                                title="Voto positivo">
+                                <i class="bi bi-arrow-up"></i> ▲ Upvote
+                            </button>
+                            
+                            <button 
+                                onclick="handleVote({{ post.id }}, -1)" 
+                                class="btn {% if user_vote == -1 %}btn-danger{% else %}btn-outline-danger{% endif %} btn-sm me-4 vote-btn"
+                                title="Voto negativo">
+                                <i class="bi bi-arrow-down"></i> ▼ Downvote
+                            </button>
+                        </div>
+                    {% else %}
+                        <p class="text-muted me-4">
+                            <i class="bi bi-info-circle"></i> Inicia sesión para votar.
+                        </p>
+                    {% endif %}
 
-<!-- Botones de voto -->
-{% if user.is_authenticated %}
-    <button onclick="handleVote({{ post.id }}, 1)" class="vote-btn upvote-btn">▲ Upvoto</button>
-    <button onclick="handleVote({{ post.id }}, -1)" class="vote-btn downvote-btn">▼ Downvoto</button>
-{% else %}
-    <p>Inicia sesión para votar.</p>
-{% endif %}
+                    <span class="badge bg-primary fs-6">
+                        Votos Totales: 
+                        <strong id="contador-votos-{{ post.id }}">{{ post.score|default:0 }}</strong>
+                    </span>
 
-<!-- Incluir jQuery o usar Fetch API para la petición AJAX -->
-<script
-  src="https://code.jquery.com/jquery-3.7.1.min.js"
-  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-  crossorigin="anonymous"></script>
-<script>
-function handleVote(postId, tipoVoto) {
-    // Es crucial incluir el token CSRF para peticiones POST en Django
-    var csrftoken = "{{ csrf_token }}"; 
-
-    $.ajax({
-        type: 'POST',
-        url: `/post/${postId}/voto/${tipoVoto}/`,
-        headers: { 'X-CSRFToken': csrftoken },
-        success: function(response) {
-            // Actualiza el contador en la página con la respuesta del servidor
-            $(`#contador-votos-${postId}`).text(response.total_votos);
-            console.log(response.message);
-        },
-        error: function(response) {
-            console.error("Error votando:", response.responseJSON.message);
-            alert("Hubo un error al votar.");
-        }
-    });
-}
-</script>
-                        <span class="badge bg-info text-dark fs-6">
-                            Votos Totales: {{ post.total_votos }}
-                        </span>
-                    </div>
-
-                    <div class="etiquetas">
-                        <!-- Muestra las etiquetas asociadas al post -->
-                        <strong>Etiquetas:</strong>
-                        {% for etiqueta in post.etiqueta.all %}
-                            <span class="badge bg-light text-secondary border">{{ etiqueta.nombre }}</span>
-                        {% empty %}
-                            <small class="text-muted">Sin etiquetas</small>
-                        {% endfor %}
-                    </div>
                 </div>
+                <hr>
 
-                <!-- Opcional: Área para botones de interacción (Like, Votar) -->
-                <!-- 
-                Si quieres añadir funcionalidad de likes o votos, aquí irían tus formularios 
-                o enlaces que apunten a las vistas correspondientes (ej: /like/<int:post_id>/)
-                -->
-                
-
+                <div class="etiquetas">
+                    <strong>Etiquetas:</strong>
+                    {% for etiqueta in post.etiqueta.all %}
+                        <span class="badge bg-light text-secondary border">{{ etiqueta.nombre }}</span>
+                    {% empty %}
+                        <small class="text-muted">Sin etiquetas</small>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 
-        <!-- Opcional: Sección para comentarios (si implementas esa funcionalidad) -->
         <div class="mt-5">
             <h3>Comentarios</h3>
-            <!-- Aquí iría el bucle de comentarios si los tienes -->
-            <p>Aún no hay comentarios.</p>
+            {% for comentario in comentarios %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ comentario.autor.get_full_name|default:comentario.autor.username }}</h5>
+                        <p class="card-text">{{ comentario.contenido|linebreaksbr }}</p>
+                        <p class="card-subtitle text-muted">Publicado el {{ comentario.fecha_creacion|date:"F d, Y \a\l\a\s H:i" }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Aún no hay comentarios.</p>
+            {% endfor %}
         </div>
 
     </div>
 
-   
-</body>
-</html>
+{% endblock contenido %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"></script>
+
+<script>
+    function handleVote(postId, tipoVoto) {
+        // Obtenemos el token CSRF
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value || "{{ csrf_token }}";
+        
+        // Referencia al post para actualizar los botones
+        const postCard = $(`#contador-votos-${postId}`).closest('.card-body');
+        
+        $.ajax({
+            type: 'POST',
+            url: `/post/${postId}/voto/${tipoVoto}/`,
+            headers: { 'X-CSRFToken': csrftoken },
+            
+            success: function(response) {
+                // 1. Actualiza el contador de votos
+                $(`#contador-votos-${postId}`).text(response.total_votos);
+                console.log(response.message);
+                
+                // 2. Opcional: Actualiza la apariencia de los botones
+                // Remueve todas las clases de 'active' y 'btn-success/danger'
+                postCard.find('.vote-btn').removeClass('btn-success btn-danger').addClass('btn-outline-success btn-outline-danger');
+                
+                if (response.voto_actual === 1) {
+                    // Si el nuevo estado es Upvote
+                    postCard.find(`[onclick*='handleVote(${postId}, 1)']`)
+                        .removeClass('btn-outline-success')
+                        .addClass('btn-success');
+                } else if (response.voto_actual === -1) {
+                    // Si el nuevo estado es Downvote
+                    postCard.find(`[onclick*='handleVote(${postId}, -1)']`)
+                        .removeClass('btn-outline-danger')
+                        .addClass('btn-danger');
+                }
+                // Si voto_actual es 0 (eliminado), solo se dejan los botones en 'outline'.
+            },
+            
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Implementación robusta del manejo de errores
+                var errorMessage = "Hubo un error al votar.";
+                
+                if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                    // Mensaje de error personalizado devuelto por la vista de Django
+                    errorMessage = jqXHR.responseJSON.message;
+                } else if (jqXHR.status === 403) {
+                    // Error de autenticación o CSRF
+                    errorMessage = "Error 403: No tienes permiso. ¿Iniciaste sesión?";
+                } else if (jqXHR.status) {
+                    // Muestra el código de estado (404, 500, etc.)
+                    errorMessage = `Error ${jqXHR.status}: ${jqXHR.statusText}`;
+                }
+                
+                console.error("Error votando:", errorMessage);
+                alert(errorMessage);
+            }
+        });
+    }
+</script>
+{% endblock scripts %}

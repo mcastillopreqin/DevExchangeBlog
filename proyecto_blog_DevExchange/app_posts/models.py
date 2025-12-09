@@ -76,7 +76,7 @@ class Voto(models.Model):
         (UPVOTO, 'Upvote'),
         (DOWNVOTO, 'Downvote'),
     )
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='votos')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='votos')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='votos')
     tipo_voto = models.SmallIntegerField(choices=TIPO_VOTOS)
     fecha_voto = models.DateTimeField(default=timezone.now)
