@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views 
-#from .views import PostDetailView
+from .views import handle_vote_view
 
 urlpatterns = [
    path("", views.inicio , name="inicio"),    
@@ -9,5 +9,5 @@ urlpatterns = [
    #path("<int:pk>/", PostDetailView.as_view(), name="detalle_post"),
   # path('<int:pk>/', views.PostDetailView.as_view(), name='detalle_post'),
    #path("post/<int:post_id>/", views.detalle_post, name="detalle_post"),      
-   path('<int:post_id>/handle_vote_view/<int:tipo_voto>/', views.voto_post, name='voto_post'),
+   path('<int:post_id>/voto/<int:tipo_voto>/', views.handle_vote_view, name ='handle_vote'),#views.voto_post, name='voto_post'),
 ]

@@ -2,6 +2,12 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import pymysql
+# Ajustar la versión reportada por PyMySQL para ser compatible con la comprobación de Django
+pymysql.version_info = (2, 2, 7, 'final', 0)
+pymysql.__version__ = '2.2.7'
+# Usar PyMySQL como reemplazo de MySQLdb para evitar dependencias nativas
+pymysql.install_as_MySQLdb()
 
 
 def main():
