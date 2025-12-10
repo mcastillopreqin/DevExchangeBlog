@@ -26,16 +26,16 @@
                     {% if user.is_authenticated %}
                         <div class="d-flex align-items-center me-4">
                             <button 
-                                onclick="handleVote({{ post.id }}, 1)" 
-                                class="btn {% if user_vote == 1 %}btn-success{% else %}btn-outline-success{% endif %} btn-sm me-2 vote-btn"
-                                title="Voto positivo">
+                                data-post="{{ post.id }}" data-tipo="1"
+                                class="btn {% if user_vote == 1 %}btn-success{% else %}btn-outline-success{% endif %} btn-sm me-2 vote-btn upvote"
+                                title="Voto positivo" aria-label="Upvote">
                                 <i class="bi bi-arrow-up"></i> ▲ Upvote
                             </button>
                             
                             <button 
-                                onclick="handleVote({{ post.id }}, -1)" 
-                                class="btn {% if user_vote == -1 %}btn-danger{% else %}btn-outline-danger{% endif %} btn-sm me-4 vote-btn"
-                                title="Voto negativo">
+                                data-post="{{ post.id }}" data-tipo="-1"
+                                class="btn {% if user_vote == -1 %}btn-danger{% else %}btn-outline-danger{% endif %} btn-sm me-4 vote-btn downvote"
+                                title="Voto negativo" aria-label="Downvote">
                                 <i class="bi bi-arrow-down"></i> ▼ Downvote
                             </button>
                         </div>
@@ -47,7 +47,7 @@
 
                     <span class="badge bg-primary fs-6">
                         Votos Totales: 
-                        <strong id="contador-votos-{{ post.id }}">{{ post.score|default:0 }}</strong>
+                        <strong id="contador-votos-{{ post.id }}">{{ post.voto_valor|default:0 }}</strong>
                     </span>
 
                 </div>
@@ -89,60 +89,75 @@
     crossorigin="anonymous"></script>
 
 <script>
-    function handleVote(postId, tipoVoto) {
-        // Obtenemos el token CSRF
-        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value || "{{ csrf_token }}";
-        
-        // Referencia al post para actualizar los botones
+    // Obtener cookie CSRF (si no hay input hidden en la plantilla)
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^|; )' + name + '=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    function handleVote(postId, tipoVoto, callback) {
+        // Obtener token CSRF: preferir el input si existe, sino la cookie
+        var csrfElem = document.querySelector('[name=csrfmiddlewaretoken]');
+        var csrftoken = csrfElem ? csrfElem.value : getCookie('csrftoken');
+
+        if (!csrftoken) {
+            alert('Imposible enviar el voto: token CSRF no disponible.');
+            return;
+        }
+
+        // Referencia al post para actualizar el contador y botones
+        const contador = document.getElementById(`contador-votos-${postId}`);
         const postCard = $(`#contador-votos-${postId}`).closest('.card-body');
-        
+
         $.ajax({
             type: 'POST',
             url: `/post/${postId}/voto/${tipoVoto}/`,
             headers: { 'X-CSRFToken': csrftoken },
-            
+            dataType: 'json',
             success: function(response) {
-                // 1. Actualiza el contador de votos
-                $(`#contador-votos-${postId}`).text(response.total_votos);
-                console.log(response.message);
-                
-                // 2. Opcional: Actualiza la apariencia de los botones
-                // Remueve todas las clases de 'active' y 'btn-success/danger'
-                postCard.find('.vote-btn').removeClass('btn-success btn-danger').addClass('btn-outline-success btn-outline-danger');
-                
+                if (response.total_votos !== undefined && contador) {
+                    // Actualiza el contador de votos
+                    contador.textContent = response.total_votos;
+                }
+
+                // Actualiza la apariencia de los botones dentro de la card
+                postCard.find('.vote-btn').removeClass('btn-success btn-danger')
+                    .addClass('btn-outline-success btn-outline-danger');
+
                 if (response.voto_actual === 1) {
-                    // Si el nuevo estado es Upvote
-                    postCard.find(`[onclick*='handleVote(${postId}, 1)']`)
+                    postCard.find(`.vote-btn.upvote[data-post='${postId}']`)
                         .removeClass('btn-outline-success')
                         .addClass('btn-success');
                 } else if (response.voto_actual === -1) {
-                    // Si el nuevo estado es Downvote
-                    postCard.find(`[onclick*='handleVote(${postId}, -1)']`)
+                    postCard.find(`.vote-btn.downvote[data-post='${postId}']`)
                         .removeClass('btn-outline-danger')
                         .addClass('btn-danger');
                 }
-                // Si voto_actual es 0 (eliminado), solo se dejan los botones en 'outline'.
+
+                if (typeof callback === 'function') callback(null, response);
             },
-            
-            error: function(jqXHR, textStatus, errorThrown) {
-                // Implementación robusta del manejo de errores
-                var errorMessage = "Hubo un error al votar.";
-                
+            error: function(jqXHR) {
+                var errorMessage = 'Hubo un error al votar.';
                 if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                    // Mensaje de error personalizado devuelto por la vista de Django
                     errorMessage = jqXHR.responseJSON.message;
                 } else if (jqXHR.status === 403) {
-                    // Error de autenticación o CSRF
-                    errorMessage = "Error 403: No tienes permiso. ¿Iniciaste sesión?";
+                    errorMessage = 'Error 403: No tienes permiso. ¿Iniciaste sesión?';
                 } else if (jqXHR.status) {
-                    // Muestra el código de estado (404, 500, etc.)
                     errorMessage = `Error ${jqXHR.status}: ${jqXHR.statusText}`;
                 }
-                
-                console.error("Error votando:", errorMessage);
+                console.error('Error votando:', errorMessage);
                 alert(errorMessage);
+                if (typeof callback === 'function') callback(new Error(errorMessage));
             }
         });
     }
+
+    // Listener delegado para botones de voto (evita onclick inline)
+    $(document).on('click', '.vote-btn', function(e) {
+        const postId = $(this).data('post');
+        const tipo = $(this).data('tipo');
+        if (!postId || typeof tipo === 'undefined') return;
+        handleVote(postId, tipo);
+    });
 </script>
 {% endblock scripts %}
