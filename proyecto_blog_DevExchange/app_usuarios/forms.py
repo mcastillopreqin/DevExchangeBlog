@@ -10,15 +10,15 @@ class RegistroUsuarioForm(UserCreationForm):
         model = User
         fields = ("username", "first_name", "last_name", "email", "password1", "password2")
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise ValidationError("Este correo electrónico ya está en uso.")
-        return email
+    # def clean_email(self):
+    #     email = self.cleaned_data.get('email')
+    #     if User.objects.filter(email=email).exists():
+    #         raise ValidationError("Este correo electrónico ya está en uso.")
+    #     return email
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-        if commit:
-            user.save()
-        return user
+    # def save(self, commit=True):
+    #     user = super().save(commit=False)
+    #     user.email = self.cleaned_data['email']
+    #     if commit:
+    #         user.save()
+    #     return user

@@ -14,6 +14,8 @@ def  registro_view(request):
             username = form.cleaned_data.get('username')
             messages.success(request, f'Cuenta creada para {username}. Ahora puedes iniciar sesión.')
             return redirect('login')
+        else:
+            messages.error(request, 'Por favor corrige los errores abajo.')
     else:
         form = RegistroUsuarioForm()
     return render(request, 'app_usuarios/registro.html', {'form': form})
@@ -29,7 +31,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.info(request, f'Has iniciado sesión como {username}.')
-                return redirect('inicio')
+                return redirect('lista_posts')
             else:
                 messages.error(request, 'Usuario o contraseña inválidos.')
         else:

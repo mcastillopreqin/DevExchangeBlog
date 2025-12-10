@@ -70,38 +70,17 @@ class Post(models.Model):
 # 4. Modelo de Voto
 # Este modelo gestiona la relación entre un usuario, un post y el tipo de voto.
 class Voto(models.Model):
-    # Enlaza al usuario que votó y al post votado
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    VOTO_CHOICES = (
+        (1, 'Upvoto'),
+        (-1, 'Downvoto'),
+    )
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    
-    # 1 para Upvote, -1 para Downvote
-    value = models.SmallIntegerField(choices=[(1, 'Upvote'), (-1, 'Downvote')]) 
+    valor = models.IntegerField(choices=VOTO_CHOICES)
 
     class Meta:
-        # Asegura que un usuario solo pueda votar un post una vez
-        unique_together = ('user', 'post')
-        
-    def __str__(self):
-        return f"{self.user.username} votó {self.value} en {self.post.title}"
+        unique_together = ('usuario', 'post')  # Un usuario solo puede votar una vez por post
 
-    # UPVOTO = 1
-    # DOWNVOTO = -1
-    # TIPO_VOTOS = (
-    #     (UPVOTO, 'Upvote'),
-    #     (DOWNVOTO, 'Downvote'),
-    # )
-    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='votos')
-    # post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='votos')
-    # tipo_voto = models.SmallIntegerField(choices=TIPO_VOTOS)
-    # fecha_voto = models.DateTimeField(default=timezone.now)
-
-    # class Meta:
-    #     # Asegura que un usuario solo pueda votar una vez por artículo.
-    #     unique_together = ('user', 'post')
-
-    # def __str__(self):
-    #     return f"{self.user.username} voto {self.get_tipo_voto_display()} on {self.post.titulo}"
-    
     # 5. Modelo de Comentario
 class Comentario(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')

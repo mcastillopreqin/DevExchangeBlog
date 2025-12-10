@@ -4,7 +4,7 @@
 
     <div class="container mt-5">
         <h1 class="mb-4">Lista de Publicaciones</h1>
-       <h2>{{ post.titulo }}</h2>
+       
         <!-- Itera sobre la lista de posts proporcionada por la vista de Django -->
         {% for post in posts %}
             <div class="card mb-4 shadow-sm">
@@ -29,7 +29,7 @@
                         <small class="text-muted">
                             <!-- Usa las propiedades definidas en tu modelo -->
                             Likes: <strong>{{ post.total_likes }}</strong> | 
-                          
+                            Votos: <strong>{{ post.voto_valor }}</strong> |
                             Estado: <span class="badge {% if post.estado == 'publicado' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ post.get_estado_display }}</span>
                         </small>
                         

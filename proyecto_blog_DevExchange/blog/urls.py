@@ -5,10 +5,10 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('app_posts.urls')), 
+    path("", include("app_posts.urls")), 
     # urls de app_posts
-    path('posts/', include('app_posts.urls')), 
+    path("posts/", include("app_posts.urls")), 
     # urls de app_usuarios
-    path('usuarios/', include('app_usuarios.urls'))
+    path("usuarios/", include("app_usuarios.urls"))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
