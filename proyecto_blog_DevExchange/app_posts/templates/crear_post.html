@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contenido  %}
+
+<div class="container-fluid" style="margin-top: 100px;">
+   
+        <div  style="margin-top: 300px;">
+            <a id="boton_post" class="btn btn-primary" href="{% url 'crear_etiqueta' %}">Crear nueva etiqueta</a>
+        </div>
+
+     <h1>Crear Nueva Pregunta</h1>   
+     <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Crear Pregunta</button>
+     </form>
+   
+</div>
+{% endblock  %}

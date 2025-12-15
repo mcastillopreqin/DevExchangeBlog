@@ -38,8 +38,8 @@ class Post(models.Model):
     creado = models.DateTimeField(auto_now_add=True)
     fecha_publicacion = models.DateTimeField(default=timezone.now, blank=True, null=True)
     imagen = models.ImageField(upload_to='media/img', blank=True, null=True)
-    voto_totales = models.ManyToManyField(User, through='Voto', related_name='voted_posts', blank=True)
-    voto_valor = models.IntegerField(default=0) # Almacena el total de votos
+    voto_totales = models.ManyToManyField(User, through='Voto', related_name='voted_posts', blank=True, editable=False)
+    voto_valor = models.IntegerField(default=0, editable=False) # Almacena el total de votos
     ESTADO_OPCIONES = (
         ('borrador', 'Borrador'),
         ('publicado', 'Publicado'),
@@ -48,7 +48,7 @@ class Post(models.Model):
 
     # Campo ManyToManyField para almacenar los usuarios que han dado "like"
     # related_name='blog_posts' permite acceder a los posts a los que un usuario ha dado like desde el objeto User.
-    likes = models.ManyToManyField(User, related_name='blog_posts', blank=True)
+    likes = models.ManyToManyField(User, related_name='blog_posts', blank=True, editable=False)
 
     # Propiedad para contar fácilmente el número de likes
     @property
@@ -75,7 +75,7 @@ class Voto(models.Model):
         (-1, 'Downvoto'),
     )
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='votos')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     valor = models.IntegerField(choices=VOTO_CHOICES)
 
     class Meta:

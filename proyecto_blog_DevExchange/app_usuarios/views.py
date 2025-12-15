@@ -2,17 +2,20 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
+from django.contrib.auth.models import Group
 
 from .forms import RegistroUsuarioForm
 
 # registro VBF vista basada en funcion
-def  registro_view(request):
+def  registro_view(self, request):
     if request.method == 'POST':
         form = RegistroUsuarioForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Cuenta creada para {username}. Ahora puedes iniciar sesión.')
+            group = Group.objects.get(name='Registrado')
+            self.object.groups.add(group)
             return redirect('login')
         else:
             messages.error(request, 'Por favor corrige los errores abajo.')

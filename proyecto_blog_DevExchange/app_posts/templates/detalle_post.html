@@ -26,35 +26,23 @@
                 </div>
                     
             <div class="voto-section">
-                {% if user.is_authenticated %}
-                    <div class="d-flex align-items-center me-4">
-                        <button 
-                            data-post="{{ post.id }}" data-tipo="1"
-                            class="btn {% if user_vote == 1 %}btn-success{% else %}btn-outline-success{% endif %} btn-sm me-2 vote-btn upvote"
-                            title="Voto positivo" aria-label="Upvote">
-                            <i class="bi bi-arrow-up"></i> ▲ Upvote
-                        </button>
-                        
-                        <button 
-                            data-post="{{ post.id }}" data-tipo="-1"
-                            class="btn {% if user_vote == -1 %}btn-danger{% else %}btn-outline-danger{% endif %} btn-sm me-4 vote-btn downvote"
-                            title="Voto negativo" aria-label="Downvote">
-                            <i class="bi bi-arrow-down"></i> ▼ Downvote
-                        </button>
-                    </div>
-                {% else %}
-                    <p class="text-muted me-4">
-                        <i class="bi bi-info-circle"></i> Inicia sesión para votar.
-                    </p>
-                {% endif %}
+                <!-- Botón Upvoto -->
+                <form action="{% url 'upvoto_post' post.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">⬆️ Voto positivo</button>
+                </form>
 
-                <span class="badge bg-primary fs-6">
-                    Votos Totales: 
-                    <strong id="contador-votos-{{ post.id }}">{{ total_votos|default:post.voto_valor }}</strong>
-                </span>
+                <!-- Botón Downvoto -->
+                <form action="{% url 'downvoto_post' post.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">⬇️ Voto negativo</button>
+                </form>
+
+                <!-- Conteo total de votos -->
+                <span class="voto-count">Votos totales: {{ post.voto_valor }}</span>
             </div>
 
-            <div class="likes-section">
+            <div class="like-section mt-3">
                 <form action="{% url 'like_post' post.id %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-primary">❤️ Like</button>
@@ -76,23 +64,44 @@
             </div>
         </div>
 
-        <div class="mt-5">
-            <h3>Comentarios</h3>
-            {% for comentario in comentarios %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ comentario.autor.get_full_name|default:comentario.autor.username }}</h5>
-                        <p class="card-text">{{ comentario.contenido|linebreaksbr }}</p>
-                        <p class="card-subtitle text-muted">Publicado el {{ comentario.fecha_creacion|date:"F d, Y \a\l\a\s H:i" }}</p>
-                    </div>
-                </div>
-            {% empty %}
-                <p>Aún no hay comentarios.</p>
-            {% endfor %}
+        <div class="container-fluid mt-5" style="margin-bottom: 20px;">
+            <h4>Comentarios</h4>
+            <br><br>
         </div>
-
-    </div>
-
+            <div class="container-fluid mb-5" style="margin-bottom: 20px;">
+        
+                {% for comentario in comentarios %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ comentario.autor.get_full_name|default:comentario.autor.username }}</h5>
+                            <p class="card-text">{{ comentario.contenido|linebreaksbr }}</p>
+                            <p class="card-subtitle text-muted">Publicado el {{ comentario.fecha_creacion|date:"F d, Y \a\l\a\s H:i" }}</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>Aún no hay comentarios - Puedes ser el primero en comentar</p>
+                {% endfor %}
+       
+       
+                <a id="comentario" ></a>
+                <div class="container-fluid mb-5" style="margin-bottom: 20px;">
+                    <form method="POST" >
+                        {% csrf_token %} 
+                        {% if user.is_authenticated %}
+                            <h2>Deja tu comentario:</h2>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <input type="submit" class="btn btn-primary" value="Enviar Comentario">
+                            </form>          
+                        {% else %}
+                            <h2>Inicia sesión o registrarte para dejar un comentario</h4>
+                            <a class="btn btn-success btn-lg" href="{% url 'login' %}?next={{ request.path }}#comentario">Iniciar Sesión</a>
+                            <input type="hidden" name="next" value="{{ request.path }}#comentario">
+                        {% endif %}  
+                    </form>
+                </div>         
+            </div>
 {% endblock contenido %}
 
 <!-- {% block scripts %}
@@ -171,5 +180,5 @@
         if (!postId || typeof tipo === 'undefined') return;
         handleVote(postId, tipo);
     });
-</script> -->
-{% endblock scripts %}
+</script> 
+{% endblock scripts %}-->

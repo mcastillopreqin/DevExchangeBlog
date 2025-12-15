@@ -1,12 +1,16 @@
 {% extends "base.html" %}
+
 {% block contenido %}
 
-    <p>Quieres eliminar la etiqueta? </p>
+    <div class="container-fluid" style="margin: 300px;">
+        <h1>Eliminar Etiqueta</h1>
+        <p>¿Estás seguro de que deseas eliminar la etiqueta "{{ object.nombre }}"?</p>
 
-    <form method="post">
-        {% csrf_token %}
-
-        <button type="submit"> confirmar </button>
-    </form>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Confirmar Eliminación" class="btn btn-danger">
+            <a style="color: black; " href="{% url 'lista_etiquetas' %}">Cancelar</a>
+        </form>
+    </div>
 
 {% endblock contenido %}    

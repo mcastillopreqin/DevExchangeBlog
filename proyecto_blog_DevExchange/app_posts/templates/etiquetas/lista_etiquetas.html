@@ -1,0 +1,18 @@
+{% extends 'base.html'%}
+
+{% block contenido  %}
+<div class="container-fluid" style="margin: 200px;">
+    <h1>Etiquetas</h1>
+    <br>
+    <ul>
+        {% for etiqueta in etiquetas %}
+        <li> {{ etiqueta.nombre}}
+            (<a style ="color: black;"
+            href="{% url  'eliminar_etiqueta' etiqueta.id %}">Eliminar Etiqueta</a>)
+        </li>
+        {% empty %}
+        <li>No hay etiquetas disponibles.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock contenido  %}

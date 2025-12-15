@@ -1,7 +1,26 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
     {% block contenido  %}
-    <h1>Iniciar Sesión</h1>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-body">     
+                    <h3 class="card-title mb-4 text-center">Iniciar Sesión</h3>
+                     <form method="POST" action="">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        </div>
+                    </form>
+            </div>
+        </div>  
+    </div>
+
+    
+    <!-- <h1>Iniciar Sesión</h1>
     <form method="POST" action="">
         {% csrf_token %}
         <div class="mb-3">
@@ -13,6 +32,22 @@
             <input type="password" class="form-control" id="password" name="password" required>         
         </div>
         <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-    </form>
+    </form> -->
 
     {% endblock contenido %} 
+
+
+
+    <!-- <h1>Iniciar Sesión</h1>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Nombre de usuario</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+         </div>
+        <div class="mb-3">                          
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="password" name="password" required>         
+        </div>
+        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+    </form> -->

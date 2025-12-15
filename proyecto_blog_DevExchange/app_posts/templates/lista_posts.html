@@ -1,39 +1,37 @@
 {% extends "base.html" %}
-
+{% load static %}
+{% load colaborador_tags %}
 {% block contenido  %}
 
     <div class="container mt-5">
-        <h1 class="mb-4">Lista de Publicaciones</h1>
-       
-        <!-- Itera sobre la lista de posts proporcionada por la vista de Django -->
+        <h1 class="mb-4">Lista de Preguntas</h1>
+        {% if user.is_superuser or user|has_group:"Colaborador" %}
+        <div class="mb-3">
+            <a href="{% url 'crear_post' %}" class="btn btn-success">Crear Nueva Pregunta</a>       
+        </div>
+        {% endif %}
         {% for post in posts %}
             <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <!-- Título de la publicación -->
-                    <h2 class="card-title">
-                        <!-- Enlace a la vista de detalle del post (debes definir la URL 'detalle_post' en urls.py) -->
+                <div class="card-body">                    
+                    <h2 class="card-title">                      
                         <a href="{% url 'detalle_post' post.pk %}" class="text-decoration-none">{{ post.titulo }}</a>
                     </h2>
-
-                    <!-- Información del autor y fecha -->
+                  
                     <p class="card-subtitle mb-2 text-muted">
                         Publicado por {{ post.autor.get_full_name|default:post.autor.username }} 
                         el {{ post.fecha_publicacion|date:"F d, Y" }}
                     </p>
 
-                    <!-- Resumen del contenido (primeros 200 caracteres para la lista) -->
+                  
                     <p class="card-text">{{ post.contenido|truncatechars:200 }}</p>
-
-                    <!-- Metadatos adicionales: Likes, Votos, Etiquetas y Estado -->
+                   
                     <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">
-                            <!-- Usa las propiedades definidas en tu modelo -->
+                        <small class="text-muted">                           
                             Likes: <strong>{{ post.total_likes }}</strong> | 
                             Votos: <strong>{{ post.voto_valor }}</strong> |
                             Estado: <span class="badge {% if post.estado == 'publicado' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ post.get_estado_display }}</span>
                         </small>
-                        
-                        <!-- Muestra las etiquetas asociadas al post -->
+                                               
                         <div>
                             {% for etiqueta in post.etiqueta.all %}
                                 <!-- Enlaza a una vista de filtro por etiqueta si lo deseas -->
@@ -41,20 +39,17 @@
                             {% endfor %}
                         </div>
                     </div>
-
-                    <!-- Enlace para leer más -->
+                   
                     <a href="{% url 'detalle_post' post.pk %}" class="btn btn-primary mt-3">Leer más</a>
 
                 </div>
             </div>
-        {% empty %}
-            <!-- Mensaje si no hay publicaciones disponibles -->
+        {% empty %}        
             <div class="alert alert-info" role="alert">
                 Aún no hay publicaciones disponibles.
             </div>
         {% endfor %}
-
-        <!-- Opcional: Paginación si tu vista utiliza un Paginator -->
+      
         {% if is_paginated %}
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
