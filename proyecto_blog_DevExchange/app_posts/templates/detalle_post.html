@@ -21,18 +21,17 @@
                     {{ post.contenido|linebreaksbr }}
                 </div>
 
-                <div class="interactions mb-4">
+                <div class="imagen-post mb-4">
+                    {% if post.imagen %}
+                        <img src="{{ post.imagen.url }}" alt="Imagen del post" class="img-fluid mb-3" />
+                    {% endif %}
+                 </div>
                     
-                </div>
-                    
-            <div class="voto-section">
-                <!-- Botón Upvoto -->
+            <div class="voto-section">                
                 <form action="{% url 'upvoto_post' post.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success">⬆️ Voto positivo</button>
-                </form>
-
-                <!-- Botón Downvoto -->
+                </form>               
                 <form action="{% url 'downvoto_post' post.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">⬇️ Voto negativo</button>
@@ -49,10 +48,7 @@
                 </form>
                 <span>{{ post.total_likes }} Likes</span>
             </div>
-
-                </div>
                 <hr>
-
                 <div class="etiquetas">
                     <strong>Etiquetas:</strong>
                     {% for etiqueta in post.etiqueta.all %}
@@ -85,26 +81,24 @@
        
                 <a id="comentario" ></a>
                 <div class="container-fluid mb-5" style="margin-bottom: 20px;">
-                    <form method="POST" >
-                        {% csrf_token %} 
-                        {% if user.is_authenticated %}
-                            <h2>Deja tu comentario:</h2>
-                            <form method="POST" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                <input type="submit" class="btn btn-primary" value="Enviar Comentario">
-                            </form>          
-                        {% else %}
-                            <h2>Inicia sesión o registrarte para dejar un comentario</h4>
-                            <a class="btn btn-success btn-lg" href="{% url 'login' %}?next={{ request.path }}#comentario">Iniciar Sesión</a>
-                            <input type="hidden" name="next" value="{{ request.path }}#comentario">
-                        {% endif %}  
-                    </form>
-                </div>         
+                    {% if user.is_authenticated %}
+                        <h2>Deja tu comentario:</h2>
+                        <form method="POST" action="{% url 'detalle_post' post.id %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form_comentario.as_p }}
+                            <input type="submit" class="btn btn-primary" value="Enviar Comentario">
+                        </form>
+                    {% else %}
+                        <h2>Inicia sesión o registrarte para dejar un comentario</h2>
+                        <a class="btn btn-success btn-lg" href="{% url 'login' %}?next={{ request.path }}#comentario">Iniciar Sesión</a>
+                        <input type="hidden" name="next" value="{{ request.path }}#comentario">
+                    {% endif %}
+                </div>
             </div>
 {% endblock contenido %}
 
-<!-- {% block scripts %}
+
+ {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
     crossorigin="anonymous"></script>
@@ -181,4 +175,4 @@
         handleVote(postId, tipo);
     });
 </script> 
-{% endblock scripts %}-->
+{% endblock scripts %}
