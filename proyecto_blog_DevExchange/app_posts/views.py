@@ -34,6 +34,15 @@ class EtiquetaCreateView(CreateView):
         else:
             return reverse_lazy('crear_post')
    
+class EtiquetaListView(ListView):
+    model = Etiqueta
+    template_name = "etiquetas/lista_etiquetas.html"
+    context_object_name = "etiquetas"
+
+class EtiquetaDeleteView(DeleteView):
+    model = Etiqueta
+    template_name = "etiquetas/eliminar_etiqueta.html"
+    success_url = reverse_lazy("lista_etiquetas")
 
 def lista_posts(request):        
     posts = Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')
