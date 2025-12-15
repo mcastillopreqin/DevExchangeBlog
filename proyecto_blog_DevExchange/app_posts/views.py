@@ -20,7 +20,6 @@ class PostCreateView(CreateView):
     model = Post
     form_class = CrearPostForm
     template_name = "crear_post.html"
-    fields = ['titulo', 'contenido', 'etiqueta', 'imagen', 'estado']
     success_url = reverse_lazy("lista_posts")
 
 class EtiquetaCreateView(CreateView):
