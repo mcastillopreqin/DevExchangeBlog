@@ -75,7 +75,7 @@ class Voto(models.Model):
         (-1, 'Downvoto'),
     )
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='votos')
     valor = models.IntegerField(choices=VOTO_CHOICES)
 
     class Meta:
