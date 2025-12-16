@@ -13,10 +13,10 @@
 <nav> 
 <ul class="nav-links">
 
-    <li><a href="{% url 'app_posts:inicio' %}">Inicio</a></li>
-    <li><a href="{% url 'about' %}">Acerca de</a></li>
+    <li><a href="{% url 'inicio' %}">Inicio</a></li>
+    <li><a href="#">Acerca de</a></li> 
     <li><a href="{% url 'lista_posts' %}">Preguntas</a></li>
-    <li><a href="{% url 'contacto' %}">Contacto</a></li>
+    <li><a href="{% url 'app_contactos:contacto' %}">Contacto</a></li>
     <li><a href="{% url 'lista_etiquetas' %}">Etiquetas</a></li>           
 <div class="dropdown">
 {% if user.is_authenticated %}
