@@ -15,7 +15,7 @@
                         </div>
                     </div>
                     {% if user.is_superuser or comentario.autor == request.user %}
-                    <br><a id="boton_post" href="{% url 'editar_comentario' pk=comentario.pk %}?next={{ request.path }}">Editar Comentario </a>
+                    <br><a id="boton_post" href="{% url 'editar_comentario' comentario.pk %}?next={{ request.path }}">Editar Comentario </a>
                     {% endif %}
                     {% if user.is_superuser or comentario.autor == request.user or request.user|has_group:"Colaborador" %}
                     <br><a id="boton_post" href="{% url 'eliminar_comentario' pk=comentario.pk %}?next={{ request.path }}">Eliminar Comentario </a>

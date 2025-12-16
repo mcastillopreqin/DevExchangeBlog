@@ -15,7 +15,7 @@ urlpatterns = [
    path('post/<int:post_id>/upvoto/', views.upvoto_post, name='upvoto_post'),
    path('post/<int:post_id>/downvoto/', views.downvoto_post, name='downvoto_post'),
    path('post/<int:post_id>/like/', views.like_post, name='like_post'),
-   path('comentario_form/<int:post_id>/', views.ComentarioUpdateView.as_view, name='editar_comentario'),
+   path('comentario/editar/<int:pk>/', views.ComentarioUpdateView.as_view(), name='editar_comentario'),
    path('eliminar_comentario/<int:pk>/', views.ComentarioDeleteView.as_view(), name='eliminar_comentario'),
      
 ]
