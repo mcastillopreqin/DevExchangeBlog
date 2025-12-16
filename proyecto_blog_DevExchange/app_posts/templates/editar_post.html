@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% load static %}
 {% block contenido %}
 
@@ -10,7 +10,7 @@
         <h1 class="mb-4">Editar Pregunta</h1>
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+             {{ form|crispy }}
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             <a href="{% url 'lista_posts' %}" class="btn btn-secondary">Cancelar</a>
         </form>

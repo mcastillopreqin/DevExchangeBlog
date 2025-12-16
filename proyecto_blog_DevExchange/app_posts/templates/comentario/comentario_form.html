@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block contenido  %}
  
     {% if user.is_superuser  or user==comentario.autor %}
@@ -6,7 +7,7 @@
         <h1>Editar Comentario</h1>   
         <form method="POST" >
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form|crispy }}
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
         </form>
 </div>

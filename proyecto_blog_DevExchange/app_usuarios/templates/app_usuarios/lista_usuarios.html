@@ -1,6 +1,6 @@
 
 {% extends 'base.html' %}
-
+{% load colaborador_tags %}
 {% block contenido %}
 	<h1>Lista de usuarios</h1>
 
@@ -33,9 +33,8 @@
 						<td>{% if usuario.is_superuser %}Sí{% else %}No{% endif %}</td>
 						<td>{{ usuario.date_joined|date:"d/m/Y H:i" }}</td>
 						<td>
-                            {% if user.is_superuser %}
-							<a class="btn btn-sm btn-secondary" href="{% url 'eliminar_usuario' usuario.pk %}">Ver / Eliminar</a>
-							<!-- Form alternativa para eliminar directamente desde la lista -->
+                            {% if user.is_superuser or user|has_group:"Colaborador" %}
+							<a class="btn btn-sm btn-secondary" href="{% url 'eliminar_usuario' usuario.pk %}">Ver / Eliminar</a>							
 							<form action="{% url 'eliminar_usuario' usuario.pk %}" method="post" style="display:inline;">
 								{% csrf_token %}
 								<input type="hidden" name="eliminar_comentarios" value="" />

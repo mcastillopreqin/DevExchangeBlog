@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block contenido  %}
 
 <div class="container-fluid" style="margin-top: 100px;">
@@ -7,7 +7,7 @@
         <h1>Crear Nueva Etiqueta</h1>   
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form|crispy }}
             <button type="submit" class="btn btn-primary">Crear Etiqueta</button>
         </form>
         <div class="container-fluid" style="margin-top: 20px;">

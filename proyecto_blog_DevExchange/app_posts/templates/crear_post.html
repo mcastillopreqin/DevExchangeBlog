@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% load colaborador_tags %}
 {% block contenido  %}
 {% if user.is_superuser or user|has_group:"Colaborador" %}
@@ -12,7 +12,7 @@
      <h1>Crear Nueva Pregunta</h1>   
      <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form|crispy }}
         <button type="submit" class="btn btn-primary">Crear Pregunta</button>
      </form>
    
