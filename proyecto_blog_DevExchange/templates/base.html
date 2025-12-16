@@ -1,169 +1,197 @@
+
 {% load static %}
 {% load colaborador_tags %}
 
-
-<!DOCTYPE html>     
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<nav>   
-<div class="logo">
-    <a href="{% url 'inicio' %}">D
-        <img src="{% static 'img/logo_devexchange.png' %}" alt="Logo DevExchange" width="50" height="50">
-    </a>
-<nav> 
-<ul class="nav-links">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}DevExchange Blog{% endblock title %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    <style>
+      /* Estilos para sidebar y layout */
+      .sidebar {
+        min-height: 100vh;
+        padding-top: 1rem;
+        background-color: grey;        
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 16.666667%;
+      }
+      .sidebar a { color: #fff; }
+      .sidebar .nav-link.active { background-color: rgba(255,255,255,0.08); }
+      .brand-small { width: 36px; height: 36px; object-fit: cover; }
+         
+      html, body { height: 100%; }
+      body { margin: 0; }
+      
+      
+      @media (min-width: 992px) {
+        main { margin-left: 16.666667%; width: 83.333333%; }
+      }      
+     
+      .footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        margin-top: 3rem;
+        width: 100%;
+      }
+    
+      .footer-inner { padding-top: 1rem; padding-bottom: 1rem; }
+      @media (min-width: 992px) {
+        .footer-inner { margin-left: 16.666667%; width: 83.333333%; }
+      }
+      .footer a { color: #0d6efd; text-decoration: none; }
+      .footer a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>    
+      <nav class="d-none d-lg-block sidebar">
+      <div class="d-flex flex-column align-items-start p-3">
+        <a class="d-flex align-items-center mb-3 text-white text-decoration-none" href="{% url 'inicio' %}">          
+           <i class="fas fa-code-branch me-2"></i>DevExchange         
+        </a>
+        <ul class="nav nav-pills flex-column mb-auto w-100">
+          <li class="nav-item"><a href="{% url 'lista_posts' %}" class="nav-link text-white">Preguntas</a></li>
+          <li class="nav-item"><a href="{% url 'app_contactos:contacto' %}" class="nav-link text-white">Contacto</a></li>
+          <li class="nav-item"><a href="{% url 'lista_etiquetas' %}" class="nav-link text-white">Etiquetas</a></li>
+        </ul>
 
-    <li><a href="{% url 'inicio' %}">Inicio</a></li>
-    <li><a href="#">Acerca de nosotros</a></li> 
-    <li><a href="{% url 'lista_posts' %}">Preguntas</a></li>
-    <li><a href="{% url 'app_contactos:contacto' %}">Contacto</a></li>
-    <li><a href="{% url 'lista_etiquetas' %}">Etiquetas</a></li>           
-<div class="dropdown">
-{% if user.is_authenticated %}
-    <p> Bienvenido</p> <h4>{{user.username}}</h4>
-    <a href="{% url 'lista_posts' %}">Lista de Preguntas</a> |
-    <li><a href="{% url 'logout' %}">{{ user.username }}: Cerrar Sesion</a></li>
-    <dov class="dropdown-content">
-      <table>       
-        {% if user.is_superuser %}
-        <tr>
-            <td><a href="{% url 'admin:index' %}">Panel de Administracion</a></td>
-        </tr>
+        <hr class="text-white-50 w-100">
+
+        {% if user.is_authenticated %}
+          <div class="ps-1 w-100">
+            <small class="text-white-50">Conectado como</small>
+            <div class="fw-bold text-white">{{ user.get_full_name|default:user.username }}</div>
+            <div class="mt-2">
+              {% if user.is_superuser %}
+                <a class="btn btn-sm btn-outline-light mb-1 w-100" href="{% url 'admin:index' %}">Panel admin</a>
+              {% endif %}
+              {% if user.is_superuser or request.user|has_group:"Colaborador" %}
+                <a class="btn btn-sm btn-outline-light mb-1 w-100" href="{% url 'lista_usuarios' %}">Usuarios</a>
+              {% endif %}
+              <a class="btn btn-sm btn-outline-light w-100" href="{% url 'logout' %}">Cerrar sesión</a>
+            </div>
+          </div>
+        {% else %}
+          <div class="ps-1 w-100">
+            <a class="btn btn-sm btn-light mb-1 w-100" href="{% url 'login' %}">Iniciar sesión</a>
+            <a class="btn btn-sm btn-outline-light w-100" href="{% url 'registro' %}">Registrarse</a>
+          </div>
         {% endif %}
-        
-       
-        {% if user.is_superuser or request.user|has_group:"Colaborador" %}
-        <tr>
-            <td><a href="{% url 'lista_usuarios' %}">Lista de usuarios</a></td>
-        </tr>
-        {% endif %}        
-        <tr>
-            <td><a href="{% url 'lista_etiquetas'%}">Lista de Etiquetas</a></td>
-        </tr>        
-        </table>
-{% else %}
-    <a href="{% url 'login' %}">Iniciar Sesion</a> |
-    <a href="{% url 'registro' %}">Registrarse</a>
-{% endif %}
-</div>
+      </div>
+    </nav>   
+    <div class="d-lg-none">
+      <nav class="navbar navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+          <a class="navbar-brand d-flex align-items-center" href="{% url 'lista_posts' %}">
+            <img src="{% static 'img/logo_devexchange.png' %}" alt="logo" class="brand-small me-2">
+            <span>DevExchange</span>
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </nav>
 
-</ul>    
-</nav>
-<body>
-    <div class="container">
-        {% load static %}
-        {% load colaborador_tags %}
+      <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="mobileMenuLabel">DevExchange</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="list-unstyled">
+            <li><a class="d-block py-2" href="{% url 'lista_posts' %}">Preguntas</a></li>
+            <li><a class="d-block py-2" href="{% url 'app_contactos:contacto' %}">Contacto</a></li>
+            <li><a class="d-block py-2" href="{% url 'lista_etiquetas' %}">Etiquetas</a></li>
+          </ul>
+          <hr>
+          {% if user.is_authenticated %}
+            <div>{{ user.get_full_name|default:user.username }}</div>
+            <a class="d-block mt-2" href="{% url 'logout' %}">Cerrar sesión</a>
+          {% else %}
+            <a class="d-block" href="{% url 'login' %}">Iniciar sesión</a>
+            <a class="d-block mt-1" href="{% url 'registro' %}">Registrarse</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+      <main>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-4" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
 
-        <!doctype html>
-        <html lang="es">
-            <head>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>{% block title %}DevExchange Blog{% endblock title %}</title>
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-                <link rel="stylesheet" href="{% static 'css/site.css' %}">
-                <style>
-                    /* Estilos mínimos para la sidebar */
-                    .sidebar {
-                        min-height: 100vh;
-                        padding-top: 1rem;
-                        background-color: #0d6efd; /* Bootstrap primary */
-                    }
-                    .sidebar a { color: #fff; }
-                    .sidebar .nav-link.active { background-color: rgba(255,255,255,0.08); }
-                    .brand-small { width: 36px; height: 36px; object-fit: cover; }
-                </style>
-            </head>
-            <body class="d-flex">
+      <div class="p-4">
+        {% block contenido %}{% endblock contenido %}
+      </div>
+    </main>
 
-                <nav class="d-none d-lg-block col-lg-2 sidebar">
-                    <div class="d-flex flex-column align-items-start p-3">
-                        <a class="d-flex align-items-center mb-3 text-white text-decoration-none" href="{% url 'lista_posts' %}">
-                            <img src="{% static 'img/logo_devexchange.png' %}" alt="logo" class="brand-small me-2">
-                            <span class="fs-5">DevExchange</span>
-                        </a>
-                        <ul class="nav nav-pills flex-column mb-auto w-100">
-                            <li class="nav-item"><a href="{% url 'lista_posts' %}" class="nav-link text-white">Preguntas</a></li>
-                            <li class="nav-item"><a href="{% url 'app_contactos:contacto' %}" class="nav-link text-white">Contacto</a></li>
-                            <li class="nav-item"><a href="{% url 'lista_etiquetas' %}" class="nav-link text-white">Etiquetas</a></li>
-                        </ul>
+    <!-- Footer -->
+    <footer class="footer mt-5 py-4">
+      <div class="footer-inner">
+        <div class="container">
+        <div class="row mb-4">          
+          <div class="col-md-4 col-sm-6 mb-3">
+            <h6 class="fw-bold mb-3">
+              <i class="fas fa-code-branch me-2"></i>DevExchange
+            </h6>
+            <p class="small text-muted">
+              Una plataforma colaborativa para compartir preguntas, respuestas y conocimiento técnico en la comunidad de desarrollo.
+            </p>
+          </div>
+          
+          <div class="col-md-4 col-sm-6 mb-3">
+            <h6 class="fw-bold mb-3">
+              <i class="fas fa-link me-2"></i>Enlaces
+            </h6>
+            <ul class="list-unstyled small">
+              <li><a href="{% url 'lista_posts' %}"><i class="fas fa-question-circle me-1"></i>Preguntas</a></li>
+              <li><a href="{% url 'lista_etiquetas' %}"><i class="fas fa-tags me-1"></i>Etiquetas</a></li>
+              <li><a href="{% url 'app_contactos:contacto' %}"><i class="fas fa-envelope me-1"></i>Contacto</a></li>
+            </ul>
+          </div>
+         
+          <div class="col-md-4 col-sm-6 mb-3">
+            <h6 class="fw-bold mb-3">
+              <i class="fas fa-users me-2"></i>Comunidad
+            </h6>
+            <p class="small text-muted mb-2">Síguenos en redes sociales:</p>
+            <div>
+              <a href="#" class="btn btn-sm btn-outline-primary me-1"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="btn btn-sm btn-outline-primary me-1"><i class="fab fa-github"></i></a>
+              <a href="#" class="btn btn-sm btn-outline-primary"><i class="fab fa-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
 
-                        <hr class="text-white-50 w-100">
+        <hr class="my-3">        
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <small class="text-muted">
+              &copy; 2026 DevExchange Blog. Todos los derechos reservados.
+            </small>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <small class="text-muted">
+              Diseñado con <i class="fas fa-heart text-danger"></i> para la comunidad de desarrollo
+            </small>
+          </div>
+        </div>
+        </div>
+      </div>
+    </footer>
 
-                        {% if user.is_authenticated %}
-                            <div class="ps-1 w-100">
-                                <small class="text-white-50">Conectado como</small>
-                                <div class="fw-bold text-white">{{ user.get_full_name|default:user.username }}</div>
-                                <div class="mt-2">
-                                    {% if user.is_superuser %}
-                                        <a class="btn btn-sm btn-light mb-1 w-100" href="{% url 'admin:index' %}">Panel admin</a>
-                                    {% endif %}
-                                    {% if user.is_superuser or request.user|has_group:"Colaborador" %}
-                                        <a class="btn btn-sm btn-outline-light mb-1 w-100" href="{% url 'lista_usuarios' %}">Usuarios</a>
-                                    {% endif %}
-                                    <a class="btn btn-sm btn-outline-light w-100" href="{% url 'logout' %}">Cerrar sesión</a>
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="ps-1 w-100">
-                                <a class="btn btn-sm btn-light mb-1 w-100" href="{% url 'login' %}">Iniciar sesión</a>
-                                <a class="btn btn-sm btn-outline-light w-100" href="{% url 'registro' %}">Registrarse</a>
-                            </div>
-                        {% endif %}
-                    </div>
-                </nav>
-
-                <!-- Offcanvas para pantallas pequeñas -->
-                <div class="d-lg-none">
-                    <nav class="navbar navbar-dark bg-primary">
-                        <div class="container-fluid">
-                            <a class="navbar-brand d-flex align-items-center" href="{% url 'lista_posts' %}">
-                                <img src="{% static 'img/logo_devexchange.png' %}" alt="logo" class="brand-small me-2">
-                                <span>DevExchange</span>
-                            </a>
-                            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
-                        </div>
-                    </nav>
-
-                    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
-                        <div class="offcanvas-header">
-                            <h5 class="offcanvas-title" id="mobileMenuLabel">DevExchange</h5>
-                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                        </div>
-                        <div class="offcanvas-body">
-                            <ul class="list-unstyled">
-                                <li><a class="d-block py-2" href="{% url 'lista_posts' %}">Preguntas</a></li>
-                                <li><a class="d-block py-2" href="{% url 'app_contactos:contacto' %}">Contacto</a></li>
-                                <li><a class="d-block py-2" href="{% url 'lista_etiquetas' %}">Etiquetas</a></li>
-                            </ul>
-                            <hr>
-                            {% if user.is_authenticated %}
-                                <div>{{ user.get_full_name|default:user.username }}</div>
-                                <a class="d-block mt-2" href="{% url 'logout' %}">Cerrar sesión</a>
-                            {% else %}
-                                <a class="d-block" href="{% url 'login' %}">Iniciar sesión</a>
-                                <a class="d-block mt-1" href="{% url 'registro' %}">Registrarse</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <main class="flex-grow-1 p-4">
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-
-                    {% block contenido %}{% endblock contenido %}
-                </main>
-
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-                {% block scripts %}{% endblock scripts %}
-            </body>
-        </html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    {% block scripts %}{% endblock scripts %}
+  </body>
+</html>

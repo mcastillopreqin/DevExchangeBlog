@@ -14,7 +14,10 @@ from .models import Post,  Etiqueta, Comentario
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 from django.urls import reverse_lazy
 def inicio(request):
-    return render(request, 'lista_posts.html', {'posts': Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')})
+    # Página de inicio: mostramos posts recientes y una galería de imágenes relacionadas
+    posts = Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')
+    gallery = Post.objects.filter(estado='publicado').exclude(imagen='').exclude(imagen__isnull=True).order_by('-fecha_publicacion')[:8]
+    return render(request, 'index.html', {'posts': posts, 'gallery': gallery})
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post

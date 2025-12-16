@@ -1,69 +1,66 @@
 {% extends "base.html" %}
 {% load static %}
 {% load colaborador_tags %}
-{% block contenido  %}
+{% block contenido %}
 
-    <div class="container mt-5">
-        <h1 class="mb-4">Lista de Preguntas</h1>
-        {% if user.is_superuser or user|has_group:"Colaborador" %}
-        <div class="mb-3">
-            <a href="{% url 'crear_post' %}" class="btn btn-success">Crear Nueva Pregunta</a>       
-        </div>
-        {% endif %}
-        {% for post in posts %}
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">                    
-                    <h2 class="card-title">                      
-                        <a href="{% url 'detalle_post' post.pk %}" class="text-decoration-none">{{ post.titulo }}</a>
-                    </h2>
-                  
-                    <p class="card-subtitle mb-2 text-muted">
-                        Publicado por {{ post.autor.get_full_name|default:post.autor.username }} 
-                        el {{ post.fecha_publicacion|date:"F d, Y" }}
-                    </p>
-
-                  
-                    <p class="card-text">{{ post.contenido|truncatechars:200 }}</p>
-                   
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">                           
-                            Likes: <strong>{{ post.total_likes }}</strong> | 
-                            Votos: <strong>{{ post.voto_valor }}</strong> |
-                            Estado: <span class="badge {% if post.estado == 'publicado' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ post.get_estado_display }}</span>
-                        </small>
-                                               
-                        <div>
-                            {% for etiqueta in post.etiqueta.all %}
-                                <!-- Enlaza a una vista de filtro por etiqueta si lo deseas -->
-                                <span class="badge bg-info text-dark">{{ etiqueta.nombre }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                   
-                    <a href="{% url 'detalle_post' post.pk %}" class="btn btn-primary mt-3">Leer más</a>
-
-                </div>
-            </div>
-        {% empty %}        
-            <div class="alert alert-info" role="alert">
-                Aún no hay publicaciones disponibles.
-            </div>
-        {% endfor %}
-      
-        {% if is_paginated %}
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
-                    {% endif %}
-                    <li class="page-item active"><a class="page-link" href="#">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a></li>
-                    {% if page_obj.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        {% endif %}
-
+    <h1 class="mb-4">Lista de Preguntas</h1>
+    {% if user.is_superuser or user|has_group:"Colaborador" %}
+    <div class="mb-3">
+        <a href="{% url 'crear_post' %}" class="btn btn-success">Crear Nueva Pregunta</a>       
     </div>
+    {% endif %}
+    {% for post in posts %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">                    
+                <h2 class="card-title">                      
+                    <a href="{% url 'detalle_post' post.pk %}" class="text-decoration-none">{{ post.titulo }}</a>
+                </h2>
+              
+                <p class="card-subtitle mb-2 text-muted">
+                    Publicado por {{ post.autor.get_full_name|default:post.autor.username }} 
+                    el {{ post.fecha_publicacion|date:"F d, Y" }}
+                </p>
+
+              
+                <p class="card-text">{{ post.contenido|truncatechars:200 }}</p>
+               
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">                           
+                        Likes: <strong>{{ post.total_likes }}</strong> | 
+                        Votos: <strong>{{ post.voto_valor }}</strong> |
+                        Estado: <span class="badge {% if post.estado == 'publicado' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ post.get_estado_display }}</span>
+                    </small>
+                                           
+                    <div>
+                        {% for etiqueta in post.etiqueta.all %}
+                            <!-- Enlaza a una vista de filtro por etiqueta si lo deseas -->
+                            <span class="badge bg-info text-dark">{{ etiqueta.nombre }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+               
+                <a href="{% url 'detalle_post' post.pk %}" class="btn btn-primary mt-3">Leer más</a>
+
+            </div>
+        </div>
+    {% empty %}        
+        <div class="alert alert-info" role="alert">
+            Aún no hay publicaciones disponibles.
+        </div>
+    {% endfor %}
+  
+    {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                {% endif %}
+                <li class="page-item active"><a class="page-link" href="#">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a></li>
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
   
 {% endblock contenido %} 

@@ -3,14 +3,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from .views import pagina_404
+from app_posts.views import inicio
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 handler404 = pagina_404
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", include("app_posts.urls"), name="inicio"),
-    # path("", include("app_posts.urls"),name="index"),   
+    path("", inicio, name="inicio"),       
     # urls de app_posts
     path("posts/", include("app_posts.urls")), 
     # urls de app_usuarios
@@ -19,4 +19,4 @@ urlpatterns = [
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -46,21 +46,21 @@ class UsuarioDeleteView(LoginRequiredMixin, DeleteView):
         es_colaborador = colaborador_group in self.object.groups.all()
         if es_colaborador:
             messages.error(request, 'No se puede eliminar un usuario con rol de Colaborador.')
-            return redirect('usuario_list')
+            return redirect('lista_usuarios')
         
         messages.success(request, f'Usuario {self.object.username} eliminado exitosamente.')
         return self.delete(request, *args, **kwargs)
 
 # registro VBF vista basada en funcion
-def  registro_view(self, request):
+def registro_view(request):
     if request.method == 'POST':
         form = RegistroUsuarioForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Cuenta creada para {username}. Ahora puedes iniciar sesión.')
             group = Group.objects.get(name='Registrado')
-            self.object.groups.add(group)
+            user.groups.add(group)
             return redirect('login')
         else:
             messages.error(request, 'Por favor corrige los errores abajo.')

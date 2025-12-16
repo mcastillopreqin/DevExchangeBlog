@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio - DevExchange{% endblock title %}
+
+{% block contenido %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="mt-2">Bienvenido a DevExchange</h1>
+      <p class="text-muted">Explora las últimas preguntas y comparte conocimiento con la comunidad.</p>
+    </div>
+  </div>
+
+  <!-- Galería de imágenes -->
+  <div class="row g-3 mb-5">
+    {% for item in gallery %}
+      <div class="col-6 col-md-3">
+        <div class="card h-100 shadow-sm">
+          {% if item.imagen %}
+            <a href="{% url 'detalle_post' item.id %}">
+              <img src="{{ item.imagen.url }}" class="card-img-top" alt="{{ item.titulo }}">
+            </a>
+          {% else %}
+            <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Sin imagen">
+          {% endif %}
+          <div class="card-body p-2">
+            <h6 class="card-title mb-1"><a class="stretched-link text-decoration-none text-dark" href="{% url 'detalle_post' item.id %}">{{ item.titulo|truncatechars:40 }}</a></h6>
+            <small class="text-muted">{{ item.autor.get_full_name|default:item.autor.username }}</small>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <p class="text-muted">No hay imágenes disponibles para mostrar.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Lista de preguntas recientes -->
+  <div class="row">
+    <div class="col-12">
+      <h3 class="mb-3">Últimas preguntas</h3>
+    </div>
+    {% for post in posts|slice:":6" %}
+      <div class="col-12 col-md-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><a href="{% url 'detalle_post' post.pk %}">{{ post.titulo }}</a></h5>
+            <p class="card-text text-muted">Publicado por {{ post.autor.get_full_name|default:post.autor.username }} • {{ post.fecha_publicacion|date:"d M Y" }}</p>
+            <p class="card-text">{{ post.contenido|truncatechars:140 }}</p>
+            <a href="{% url 'detalle_post' post.pk %}" class="btn btn-sm btn-primary">Leer más</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">No hay publicaciones aún.</div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock contenido %}
