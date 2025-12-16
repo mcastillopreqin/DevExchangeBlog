@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load colaborador_tags %}
 {% block contenido %}
 
     <div class="container mt-5">
@@ -24,9 +25,18 @@
                 <div class="imagen-post mb-4">
                     {% if post.imagen %}
                         <img src="{{ post.imagen.url }}" alt="Imagen del post" class="img-fluid mb-3" />
+                    {% else %}
+                        <p class="text-muted">No hay imagen disponible para este post.</p>
                     {% endif %}
                  </div>
-                    
+             
+             {% if user.is_superuser or user|has_group:"Colaborador" %}
+                <div class="mb-4">
+                    <a href="{% url 'editar_post' pk=post.id %}" class="btn btn-warning">Editar Pregunta</a>
+                    <a href="{% url 'eliminar_post' pk=post.id %}" class="btn btn-danger">Eliminar Pregunta</a>
+                </div>
+             {% endif %}
+
             <div class="voto-section">                
                 <form action="{% url 'upvoto_post' post.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
@@ -59,8 +69,8 @@
                 </div>
             </div>
         </div>
-
-        <div class="container-fluid mt-5" style="margin-bottom: 20px;">
+{% include 'comentario/crear_comentario.html' %}
+        <!-- <div class="container-fluid mt-5" style="margin-bottom: 20px;">
             <h4>Comentarios</h4>
             <br><br>
         </div>
@@ -89,12 +99,13 @@
                             <input type="submit" class="btn btn-primary" value="Enviar Comentario">
                         </form>
                     {% else %}
-                        <h2>Inicia sesión o registrarte para dejar un comentario</h2>
+                        <h2>Inicia sesión o registrate para dejar un comentario</h2>
                         <a class="btn btn-success btn-lg" href="{% url 'login' %}?next={{ request.path }}#comentario">Iniciar Sesión</a>
                         <input type="hidden" name="next" value="{{ request.path }}#comentario">
                     {% endif %}
                 </div>
-            </div>
+            </div> -->
+    </div>
 {% endblock contenido %}
 
 

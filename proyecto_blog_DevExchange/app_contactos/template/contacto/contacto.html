@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contenido  %}
+
+<div class="container mt-5">
+     <form method="POST" style="margin: 200px;">
+    <h1>Formulario de Contacto</h1>
+    <br>  
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <table>
+        {% csrf_token %}
+        {{ form.as_table }}
+    </table>
+        <input type="submit" class="btn btn-primary">Enviar Mensaje</button>
+    </form>
+</div>
+{% endblock contenido  %}

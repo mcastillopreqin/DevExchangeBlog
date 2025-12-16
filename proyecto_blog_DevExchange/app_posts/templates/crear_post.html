@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
-{% load static %}
-{% block contenido  %}
 
+{% load colaborador_tags %}
+{% block contenido  %}
+{% if user.is_superuser or user|has_group:"Colaborador" %}
 <div class="container-fluid" style="margin-top: 100px;">
    
         <div  style="margin-top: 300px;">
@@ -16,4 +17,9 @@
      </form>
    
 </div>
+{% else % }
+    <div class="alert alert-danger mt-5" role="alert">
+        No tienes permiso para crear una nueva pregunta, solo usuarios con rol de Colaborador o Administrador pueden hacerlo.
+    </div>
+{% endif %}
 {% endblock  %}

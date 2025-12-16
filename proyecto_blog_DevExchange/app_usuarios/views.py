@@ -2,9 +2,54 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
+from app_posts.models import Comentario, Post
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DeleteView
+from django.urls import reverse_lazy
+
 
 from .forms import RegistroUsuarioForm
+
+class UsuarioListView(LoginRequiredMixin, ListView):
+    model = User
+    template_name = "app_usuarios/usuario_list.html"
+    context_object_name = "usuarios"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset - queryset.exclude(is_superuser=True)
+        return queryset
+
+class UsuarioDeleteView(LoginRequiredMixin, DeleteView):
+    model = User
+    template_name = "app_usuarios/eliminar_usuario.html"
+    success_url = reverse_lazy("usuario_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        colaborador_group = Group.objects.get(name='Colaborador')
+        es_colaborador = colaborador_group in self.object.groups.all()
+        context['es_colaborador'] = es_colaborador
+        return context
+    
+    def post (self, request, *args, **kwargs):
+        eliminar_comentarios = request.POST.get('eliminar_comentarios' , False)
+        eliminar_posts = request.POST.get('eliminar_posts' , False)
+        self.object = self.get_object()
+        if eliminar_comentarios:
+            Comentario.objects.filter(autor=self.object).delete()
+        if eliminar_posts:
+            Post.objects.filter(autor=self.object).delete()   
+
+        colaborador_group = Group.objects.get(name='Colaborador')
+        es_colaborador = colaborador_group in self.object.groups.all()
+        if es_colaborador:
+            messages.error(request, 'No se puede eliminar un usuario con rol de Colaborador.')
+            return redirect('usuario_list')
+        
+        messages.success(request, f'Usuario {self.object.username} eliminado exitosamente.')
+        return self.delete(request, *args, **kwargs)
 
 # registro VBF vista basada en funcion
 def  registro_view(self, request):

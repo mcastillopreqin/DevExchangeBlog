@@ -10,7 +10,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import CrearPostForm, ComentarioForm, NuevaEtiquetaForm
-from .models import Post, Voto, Etiqueta, Comentario
+from .models import Post,  Etiqueta, Comentario
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 from django.urls import reverse_lazy
 def inicio(request):
@@ -51,6 +51,16 @@ class PostDetailView(DetailView):
         context = self.get_context_data(form_comentario=form)
         return self.render_to_response(context)
     
+class PostUpdateView(LoginRequiredMixin, UpdateView):
+    model = Post
+    form_class = CrearPostForm
+    template_name = "editar_post.html"
+    success_url = reverse_lazy("lista_posts")
+
+class PostDeleteView(LoginRequiredMixin, DeleteView):
+    model = Post
+    template_name = "eliminar_post.html"
+    success_url = reverse_lazy("lista_posts")
 
 class EtiquetaCreateView(LoginRequiredMixin, CreateView):
     model = Etiqueta
@@ -79,11 +89,6 @@ def lista_posts(request):
     posts = Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')
     return render(request, 'lista_posts.html', {'posts': posts})
 
-class PostDeleteView(DeleteView):
-    model = Post
-    template_name = "app_posts/eliminar_post.html"
-    success_url = reverse_lazy("listar_posts")
-
  
 class ComentarioCreateView(LoginRequiredMixin, CreateView):
     model = Comentario
@@ -95,6 +100,26 @@ class ComentarioCreateView(LoginRequiredMixin, CreateView):
         form.instance.autor = self.request.user
         form.instance.post_id = self.kwargs['post_id']
         return super().form_valid(form)
+    
+class ComentarioUpdateView(LoginRequiredMixin, UpdateView):
+    model = Comentario
+    form_class = ComentarioForm
+    template_name = 'comentario/comentario_form.html'
+    
+    
+    def get_success_url(self):
+        next_url = self.request.GET.get('next')
+        if next_url:
+            return next_url
+        else:
+            return reverse_lazy('detalle_post', kwargs={'post_id': self.object.post.id})
+        
+class ComentarioDeleteView(LoginRequiredMixin, DeleteView):
+    model = Comentario
+    template_name = 'comentario/eliminar_comentario.html'
+
+    def get_success_url(self):
+        return reverse_lazy('detalle_post', kwargs={'post_id': self.object.post.id})
 
 # 1 (Voto Positivo/Upvote)
 # -1 (Voto Negativo/Downvote)
