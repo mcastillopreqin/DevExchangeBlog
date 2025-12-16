@@ -13,18 +13,18 @@ from .forms import RegistroUsuarioForm
 
 class UsuarioListView(LoginRequiredMixin, ListView):
     model = User
-    template_name = "app_usuarios/usuario_list.html"
+    template_name = "app_usuarios/lista_usuarios.html"
     context_object_name = "usuarios"
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset - queryset.exclude(is_superuser=True)
+        queryset = queryset.exclude(is_superuser=True)
         return queryset
 
 class UsuarioDeleteView(LoginRequiredMixin, DeleteView):
     model = User
     template_name = "app_usuarios/eliminar_usuario.html"
-    success_url = reverse_lazy("usuario_list")
+    success_url = reverse_lazy("lista_usuarios")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

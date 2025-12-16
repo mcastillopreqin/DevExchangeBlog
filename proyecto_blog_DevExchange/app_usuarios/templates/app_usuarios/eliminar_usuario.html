@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
-{% load colaborador_tags %
-}
+{% load colaborador_tags %}
 {% block contenido %}
 
 <div class="container mt-5">
-    {% if user.is_superuser or request.user|has_group:"Colaborador" %}
+    {% if user.is_superuser or user|has_group:"Colaborador" %}
     <div class="container-fluid" style="margin:400px" >
         <h2>Eliminar Usuario: {{ object.username }}</h2>
          <p>¿Estás seguro de que deseas eliminar este usuario "{{ object.username }}" ?</p><br>
@@ -13,12 +12,12 @@
             <label for="eliminar_comentarios">Eliminar todos los comentarios realizados por este usuario:</label>
             <input type="checkbox" id="eliminar_comentarios" name="eliminar_comentarios"><br><br>
             {% if es_colaborador %}
-            <label for="eliminar_posts">Eliminar todas las preguntas realizadas por este usuario?</label
+            <label for="eliminar_posts">Eliminar todas las preguntas realizadas por este usuario?</label>
             <input type="checkbox" id="eliminar_posts" name="eliminar_posts"><br><br>
             {% endif %}
 
             <input type="submit" value="Confirmar Eliminación" class="btn btn-danger">
-            <a href="{% url 'usuario_list' %}" class="btn btn-secondary">
+            <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">
                 Cancelar
             </a>
         </form>

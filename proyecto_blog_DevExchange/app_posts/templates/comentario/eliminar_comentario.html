@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load colaborador_tags %}
+
+{% block contenido  %}
+{% if user.is_superuser or request.user|has_group:"Colaborador" or comentario.autor == user %}
+<div class="container-fluid" style="margin: 200px;">   
+        <h1>Eliminar Comentario</h1>  
+        <p>¿Estás seguro de que deseas eliminar este comentario?</p>
+        <form method="POST" >
+            {% csrf_token %}         
+            <button type="submit" class="btn btn-danger">Eliminar Comentario</button>
+            <a href="{% if next %}{{ next }}{% else %}{% url 'lista_posts' %}{% endif %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+</div>
+{% else %}
+    <div class="container-fluid" style="margin-top: 100px;">
+        <div class="alert alert-danger mt-5" role="alert">
+           <h1> No tienes permiso para eliminar este comentario.</h1>
+        </div>
+    </div>
+{% endif %}
+{% endblock contenido  %}

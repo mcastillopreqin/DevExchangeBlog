@@ -6,7 +6,7 @@
     <div class="container mt-5">
         
         <div class="mb-4">
-            <a href="{% url 'lista_posts' %}" class="btn btn-secondary">← Volver a la lista de publicaciones</a>
+            <a href="{% url 'lista_posts' %}" class="btn btn-secondary">← Volver a la lista de preguntas</a>
         </div>
 
         <div class="card shadow-lg">
@@ -70,41 +70,7 @@
             </div>
         </div>
 {% include 'comentario/crear_comentario.html' %}
-        <!-- <div class="container-fluid mt-5" style="margin-bottom: 20px;">
-            <h4>Comentarios</h4>
-            <br><br>
-        </div>
-            <div class="container-fluid mb-5" style="margin-bottom: 20px;">
-        
-                {% for comentario in comentarios %}
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ comentario.autor.get_full_name|default:comentario.autor.username }}</h5>
-                            <p class="card-text">{{ comentario.contenido|linebreaksbr }}</p>
-                            <p class="card-subtitle text-muted">Publicado el {{ comentario.fecha_creacion|date:"F d, Y \a\l\a\s H:i" }}</p>
-                        </div>
-                    </div>
-                {% empty %}
-                    <p>Aún no hay comentarios - Puedes ser el primero en comentar</p>
-                {% endfor %}
        
-       
-                <a id="comentario" ></a>
-                <div class="container-fluid mb-5" style="margin-bottom: 20px;">
-                    {% if user.is_authenticated %}
-                        <h2>Deja tu comentario:</h2>
-                        <form method="POST" action="{% url 'detalle_post' post.id %}" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            {{ form_comentario.as_p }}
-                            <input type="submit" class="btn btn-primary" value="Enviar Comentario">
-                        </form>
-                    {% else %}
-                        <h2>Inicia sesión o registrate para dejar un comentario</h2>
-                        <a class="btn btn-success btn-lg" href="{% url 'login' %}?next={{ request.path }}#comentario">Iniciar Sesión</a>
-                        <input type="hidden" name="next" value="{{ request.path }}#comentario">
-                    {% endif %}
-                </div>
-            </div> -->
     </div>
 {% endblock contenido %}
 

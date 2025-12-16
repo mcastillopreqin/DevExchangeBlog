@@ -14,7 +14,14 @@
                             <p class="card-subtitle text-muted">Publicado el {{ comentario.fecha_creacion|date:"F d, Y \a\l\a\s H:i" }}</p>
                         </div>
                     </div>
-                {% empty %}
+                    {% if user.is_superuser or comentario.autor == request.user %}
+                    <br><a id="boton_post" href="{% url 'editar_comentario' pk=comentario.pk %}?next={{ request.path }}">Editar Comentario </a>
+                    {% endif %}
+                    {% if user.is_superuser or comentario.autor == request.user or request.user|has_group:"Colaborador" %}
+                    <br><a id="boton_post" href="{% url 'eliminar_comentario' pk=comentario.pk %}?next={{ request.path }}">Eliminar Comentario </a>
+                    {% endif %}
+                    <br><br>                    
+                    {% empty %}
                     <p>Aún no hay comentarios - Puedes ser el primero en comentar</p>
                 {% endfor %}
        
