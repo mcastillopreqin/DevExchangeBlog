@@ -9,6 +9,18 @@
         <a href="{% url 'crear_post' %}" class="btn btn-success">Crear Nueva Pregunta</a>       
     </div>
     {% endif %}
+    <h2>Total de Preguntas: {{ page_obj.paginator.count }}</h2>
+    <h2>Preguntas Publicadas: {{ posts|length }}</h2>
+    
+    <h2>Ordenar por</h2>
+    <div class="mb-4">
+        <a href="{% url 'lista_posts' %}?orden=reciente" class="btn btn-outline-primary {% if not request.GET.orden or request.GET.orden == 'reciente' %}active{% endif %}">Fecha (Más Reciente)</a>
+        <a href="{% url 'lista_posts' %}?orden=antiguo" class="btn btn-outline-primary {% if request.GET.orden == 'antiguo' %}active{% endif %}">Fecha (Más Antiguo)</a>
+        <a href="{% url 'lista_posts' %}?orden=alfabetico" class="btn btn-outline-primary {% if request.GET.orden == 'alfabetico' %}active{% endif %}">Orden Alfabetico</a>
+        <a href="{% url 'lista_posts' %}?orden=likes" class="btn btn-outline-primary {% if request.GET.orden == 'likes' %}active{% endif %}">Likes</a>
+        <a href="{% url 'lista_posts' %}?orden=votos" class="btn btn-outline-primary {% if request.GET.orden == 'votos' %}active{% endif %}">Votos</a>
+       
+    </div>
     {% for post in posts %}
         <div class="card mb-4 shadow-sm">
             <div class="card-body">                    
@@ -53,11 +65,15 @@
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
                 {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.orden %}&orden={{ request.GET.orden }}{% endif %}">Anterior</a>
+                    </li>
                 {% endif %}
                 <li class="page-item active"><a class="page-link" href="#">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a></li>
                 {% if page_obj.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.orden %}&orden={{ request.GET.orden }}{% endif %}">Siguiente</a>
+                    </li>
                 {% endif %}
             </ul>
         </nav>
