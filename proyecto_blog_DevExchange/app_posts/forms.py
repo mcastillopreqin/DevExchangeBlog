@@ -4,7 +4,10 @@ from .models import Comentario, Post, Etiqueta
 class ComentarioForm(forms.ModelForm):
     class Meta:
         model = Comentario
-        fields = ['contenido']  
+        fields = ['contenido']
+        widgets = { "contenido": forms.Textarea(attrs={"class": "form-control", "rows": 8, "placeholder": "Escribe tu comentario aquí..."}) }
+
+    
 
 class CrearPostForm(forms.ModelForm):
     class Meta:

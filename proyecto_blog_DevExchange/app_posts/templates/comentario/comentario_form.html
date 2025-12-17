@@ -3,7 +3,7 @@
 {% block contenido  %}
  
     {% if user.is_superuser or object.autor == request.user %}
-    <div class="container-fluid" style="margin: 200px;">   
+    <div class="container-fluid" >   
             <h1>Editar Comentario</h1>   
             <form method="POST" >
                 {% csrf_token %}

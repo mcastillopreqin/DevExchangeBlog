@@ -7,7 +7,7 @@
             <div class="container-fluid mb-5" style="margin-bottom: 20px;">
                 <div class="comment-list">
                 {% for comentario in comentarios %}
-                    <div class="card mb-3 comment-card">
+                    <div class="card mb-5 comment-card" >
                         <div class="card-body">
                             <h5 class="card-title comment-author">{{ comentario.autor.get_full_name|default:comentario.autor.username }}</h5>
                             <p class="card-text comment-text">{{ comentario.contenido|linebreaksbr }}</p>
@@ -41,7 +41,7 @@
                 <div class="container-fluid mb-5" style="margin-bottom: 20px;">
                     {% if user.is_authenticated %}
                         <h2>Deja tu comentario:</h2>
-                        <form method="POST" action="{% url 'detalle_post' post.id %}" class="form-control" enctype="multipart/form-data">
+                        <form method="POST" action="{% url 'detalle_post' post.id %}" class="form-control" enctype="multipart/form-data" >
                             {% csrf_token %}
                             {{ form_comentario.as_p }}
                             <input type="submit" class="btn btn-primary" value="Enviar Comentario">
