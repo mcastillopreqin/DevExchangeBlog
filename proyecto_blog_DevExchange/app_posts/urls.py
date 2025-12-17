@@ -22,5 +22,7 @@ urlpatterns = [
    path('etiquetas/<int:pk>/posts/', views.PostPorEtiquetaListView.as_view(), name='posts_por_etiqueta'),
    path('comentario/editar/<int:pk>/', views.ComentarioUpdateView.as_view(), name='editar_comentario'),
    path('eliminar_comentario/<int:pk>/', views.ComentarioDeleteView.as_view(), name='eliminar_comentario'),
+   path('comentario/<int:comentario_id>/upvoto/', views.upvoto_comentario, name='upvoto_comentario'),
+   path('comentario/<int:comentario_id>/downvoto/', views.downvoto_comentario, name='downvoto_comentario'),
      
 ]

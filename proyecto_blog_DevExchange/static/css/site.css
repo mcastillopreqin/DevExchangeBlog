@@ -1,4 +1,3 @@
-/* Estilos generales del sitio (site.css) */
 /* Comentarios */
 .comment-list { max-width: 900px; margin: 0 auto; }
 .comment-card { border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
@@ -13,14 +12,11 @@
 .comment-form textarea, .comment-form input[type="text"] { width: 100%; }
 .comment-form .btn-primary { min-width: 140px; }
 
-/* Botón id=boton_post (legacy) */
 #boton_post { display: inline-block; margin-top: .5rem; color: #0d6efd; text-decoration: none; }
 #boton_post:hover { text-decoration: underline; }
 
-/* Responsive tweaks */
 @media (max-width: 767px) {
   .comment-list, .comment-form { padding-left: 12px; padding-right: 12px; }
 }
 
-/* Small helper for gallery images */
 .gallery-img { width: 100%; height: 160px; object-fit: cover; border-radius: 6px; }

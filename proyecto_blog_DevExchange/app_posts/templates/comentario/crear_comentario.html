@@ -12,6 +12,17 @@
                             <h5 class="card-title comment-author">{{ comentario.autor.get_full_name|default:comentario.autor.username }}</h5>
                             <p class="card-text comment-text">{{ comentario.contenido|linebreaksbr }}</p>
                             <p class="card-subtitle text-muted comment-meta">Publicado el {{ comentario.fecha_creacion|date:"F d, Y \\a\\l\\a\\s H:i" }}</p>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <form action="{% url 'upvoto_comentario' comentario.id %}" method="post" class="m-0">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-success">↑</button>
+                                </form>
+                                <form action="{% url 'downvoto_comentario' comentario.id %}" method="post" class="m-0">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">↓</button>
+                                </form>
+                                <span class="badge bg-secondary">Votos: {{ comentario.voto_valor }}</span>
+                            </div>
                             <div class="comment-actions">
                                 {% if user.is_superuser or comentario.autor == request.user %}
                                     <a class="btn btn-sm btn-link p-0" href="{% url 'editar_comentario' comentario.pk %}?next={{ request.path }}">Editar</a>

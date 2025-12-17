@@ -38,11 +38,11 @@
         <div class="voto-section">                
             <form action="{% url 'upvoto_post' post.id %}" method="post" style="display:inline;">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-success">⬆️ Voto positivo</button>
+                <button type="submit" class="btn btn-success">↑ Voto positivo</button>
             </form>               
             <form action="{% url 'downvoto_post' post.id %}" method="post" style="display:inline;">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">⬇️ Voto negativo</button>
+                <button type="submit" class="btn btn-danger">↓ Voto negativo</button>
             </form>
 
             <!-- Conteo total de votos -->
@@ -106,8 +106,7 @@
                     // Actualiza el contador de votos
                     contador.textContent = response.total_votos;
                 }
-
-                // Actualiza la apariencia de los botones dentro de la card
+                
                 postCard.find('.vote-btn').removeClass('btn-success btn-danger')
                     .addClass('btn-outline-success btn-outline-danger');
 

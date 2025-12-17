@@ -10,9 +10,10 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import CrearPostForm, ComentarioForm, NuevaEtiquetaForm
-from .models import Post,  Etiqueta, Comentario
+from .models import Post,  Etiqueta, Comentario, ComentarioVoto
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, Sum
+from django.db.models.functions import Coalesce
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 from django.urls import reverse_lazy
 def inicio(request):
@@ -110,7 +111,7 @@ class EtiquetaCreateView(LoginRequiredMixin, CreateView):
         if next_url:
             return next_url
         else:
-            return reverse_lazy('crear_post')
+            return reverse_lazy('lista_etiquetas')
    
 class EtiquetaListView(ListView):
     model = Etiqueta
@@ -209,6 +210,44 @@ def like_post(request, post_id):
     else:
         post.likes.add(request.user)
     return redirect('detalle_post', post_id=post.id)
+
+
+@login_required
+def upvoto_comentario(request, comentario_id):
+    comentario = get_object_or_404(Comentario, id=comentario_id)
+    voto, created = ComentarioVoto.objects.get_or_create(comentario=comentario, usuario=request.user, defaults={'valor': 1})
+
+    if not created:
+        if voto.valor == 1:
+            # Toggle: si ya era upvote, elimina el voto
+            voto.delete()
+        else:
+            voto.valor = 1
+            voto.save(update_fields=['valor'])
+
+    total = ComentarioVoto.objects.filter(comentario=comentario).aggregate(total=Coalesce(Sum('valor'), 0))['total']
+    comentario.voto_valor = total
+    comentario.save(update_fields=['voto_valor'])
+    return redirect('detalle_post', post_id=comentario.post.id)
+
+
+@login_required
+def downvoto_comentario(request, comentario_id):
+    comentario = get_object_or_404(Comentario, id=comentario_id)
+    voto, created = ComentarioVoto.objects.get_or_create(comentario=comentario, usuario=request.user, defaults={'valor': -1})
+
+    if not created:
+        if voto.valor == -1:
+            # Toggle: si ya era downvote, elimina el voto
+            voto.delete()
+        else:
+            voto.valor = -1
+            voto.save(update_fields=['valor'])
+
+    total = ComentarioVoto.objects.filter(comentario=comentario).aggregate(total=Coalesce(Sum('valor'), 0))['total']
+    comentario.voto_valor = total
+    comentario.save(update_fields=['voto_valor'])
+    return redirect('detalle_post', post_id=comentario.post.id)
 
 def acerca(request):
     return render(request, 'acerca.html')

@@ -2,11 +2,9 @@ from .forms import ContactoForm
 from django.contrib import messages
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-
 class ContactoUsuario(CreateView):
     template_name = 'contacto/contacto.html'
-    form_class = ContactoForm
-    # Redirige de nuevo al formulario usando el namespace correcto
+    form_class = ContactoForm    
     success_url = reverse_lazy('app_contactos:contacto')    
 
     def get_context_data(self, **kwargs):
