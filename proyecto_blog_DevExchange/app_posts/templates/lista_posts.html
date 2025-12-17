@@ -14,12 +14,13 @@
     
     <h2>Ordenar por</h2>
     <div class="mb-4">
-        <a href="{% url 'lista_posts' %}?orden=reciente" class="btn btn-outline-primary {% if not request.GET.orden or request.GET.orden == 'reciente' %}active{% endif %}">Fecha (Más Reciente)</a>
-        <a href="{% url 'lista_posts' %}?orden=antiguo" class="btn btn-outline-primary {% if request.GET.orden == 'antiguo' %}active{% endif %}">Fecha (Más Antiguo)</a>
-        <a href="{% url 'lista_posts' %}?orden=alfabetico" class="btn btn-outline-primary {% if request.GET.orden == 'alfabetico' %}active{% endif %}">Orden Alfabetico</a>
-        <a href="{% url 'lista_posts' %}?orden=likes" class="btn btn-outline-primary {% if request.GET.orden == 'likes' %}active{% endif %}">Likes</a>
-        <a href="{% url 'lista_posts' %}?orden=votos" class="btn btn-outline-primary {% if request.GET.orden == 'votos' %}active{% endif %}">Votos</a>
-       
+        {% with orden_actual=request.GET.orden|default:'reciente' %}
+        <a href="{% url 'lista_posts' %}?orden=reciente" class="btn {% if orden_actual == 'reciente' %}btn-primary{% else %}btn-outline-primary{% endif %}">Fecha (Más Reciente)</a>
+        <a href="{% url 'lista_posts' %}?orden=antiguo" class="btn {% if orden_actual == 'antiguo' %}btn-primary{% else %}btn-outline-primary{% endif %}">Fecha (Más Antiguo)</a>
+        <a href="{% url 'lista_posts' %}?orden=alfabetico" class="btn {% if orden_actual == 'alfabetico' %}btn-primary{% else %}btn-outline-primary{% endif %}">Orden Alfabetico</a>
+        <a href="{% url 'lista_posts' %}?orden=likes" class="btn {% if orden_actual == 'likes' %}btn-primary{% else %}btn-outline-primary{% endif %}">Likes</a>
+        <a href="{% url 'lista_posts' %}?orden=votos" class="btn {% if orden_actual == 'votos' %}btn-primary{% else %}btn-outline-primary{% endif %}">Votos</a>
+        {% endwith %}
     </div>
     {% for post in posts %}
         <div class="card mb-4 shadow-sm">
@@ -69,7 +70,16 @@
                         <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.orden %}&orden={{ request.GET.orden }}{% endif %}">Anterior</a>
                     </li>
                 {% endif %}
-                <li class="page-item active"><a class="page-link" href="#">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a></li>
+
+                {# Mostrar enlaces numerados de página (puedes ajustar el rango si hay muchas páginas) #}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}{% if request.GET.orden %}&orden={{ request.GET.orden }}{% endif %}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
                 {% if page_obj.has_next %}
                     <li class="page-item">
                         <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.orden %}&orden={{ request.GET.orden }}{% endif %}">Siguiente</a>

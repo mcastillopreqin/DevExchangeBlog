@@ -5,6 +5,9 @@ from .views import *
 urlpatterns = [
    path("", views.inicio , name="inicio"),    
    path("lista", views.lista_posts, name="lista_posts"),
+   # Si se quiere usar la vista basada en clases para listados paginados,
+   # podemos mapearla con un nombre distinto. Por ahora mantenemos la
+   # vista funcional `lista_posts` usada en las plantillas.
    path("detalle/<int:post_id>/", views.PostDetailView.as_view(), name="detalle_post"),
    path("crear_post/", views.PostCreateView.as_view(), name="crear_post"),
    path('editar/<int:pk>/', views.PostUpdateView.as_view(), name='editar_post'),
@@ -15,6 +18,7 @@ urlpatterns = [
    path('post/<int:post_id>/upvoto/', views.upvoto_post, name='upvoto_post'),
    path('post/<int:post_id>/downvoto/', views.downvoto_post, name='downvoto_post'),
    path('post/<int:post_id>/like/', views.like_post, name='like_post'),
+   path('etiquetas/<int:pk>/posts/', views.PostPorEtiquetaListView.as_view(), name='posts_por_etiqueta'),
    path('comentario/editar/<int:pk>/', views.ComentarioUpdateView.as_view(), name='editar_comentario'),
    path('eliminar_comentario/<int:pk>/', views.ComentarioDeleteView.as_view(), name='eliminar_comentario'),
      
