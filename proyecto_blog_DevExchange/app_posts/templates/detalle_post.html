@@ -138,8 +138,7 @@
             }
         });
     }
-
-    // Listener delegado para botones de voto (evita onclick inline)
+   
     $(document).on('click', '.vote-btn', function(e) {
         const postId = $(this).data('post');
         const tipo = $(this).data('tipo');

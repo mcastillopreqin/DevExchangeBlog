@@ -5,32 +5,32 @@
             <br><br>
         </div>
             <div class="container-fluid mb-5" style="margin-bottom: 20px;">
-        
+                <div class="comment-list">
                 {% for comentario in comentarios %}
-                    <div class="card mb-3">
+                    <div class="card mb-3 comment-card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ comentario.autor.get_full_name|default:comentario.autor.username }}</h5>
-                            <p class="card-text">{{ comentario.contenido|linebreaksbr }}</p>
-                            <p class="card-subtitle text-muted">Publicado el {{ comentario.fecha_creacion|date:"F d, Y \a\l\a\s H:i" }}</p>
+                            <h5 class="card-title comment-author">{{ comentario.autor.get_full_name|default:comentario.autor.username }}</h5>
+                            <p class="card-text comment-text">{{ comentario.contenido|linebreaksbr }}</p>
+                            <p class="card-subtitle text-muted comment-meta">Publicado el {{ comentario.fecha_creacion|date:"F d, Y \\a\\l\\a\\s H:i" }}</p>
+                            <div class="comment-actions">
+                                {% if user.is_superuser or comentario.autor == request.user %}
+                                    <a class="btn btn-sm btn-link p-0" href="{% url 'editar_comentario' comentario.pk %}?next={{ request.path }}">Editar</a>
+                                {% endif %}
+                                {% if user.is_superuser or comentario.autor == request.user or request.user|has_group:"Colaborador" %}
+                                    <a class="btn btn-sm btn-link p-0 text-danger" href="{% url 'eliminar_comentario' pk=comentario.pk %}?next={{ request.path }}">Eliminar</a>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                    {% if user.is_superuser or comentario.autor == request.user %}
-                    <br><a id="boton_post" href="{% url 'editar_comentario' comentario.pk %}?next={{ request.path }}">Editar Comentario </a>
-                    {% endif %}
-                    {% if user.is_superuser or comentario.autor == request.user or request.user|has_group:"Colaborador" %}
-                    <br><a id="boton_post" href="{% url 'eliminar_comentario' pk=comentario.pk %}?next={{ request.path }}">Eliminar Comentario </a>
-                    {% endif %}
-                    <br><br>                    
-                    {% empty %}
+                {% empty %}
                     <p>Aún no hay comentarios - Puedes ser el primero en comentar</p>
                 {% endfor %}
-       
-       
-                <a id="comentario" ></a>
+                </div>      
+                
                 <div class="container-fluid mb-5" style="margin-bottom: 20px;">
                     {% if user.is_authenticated %}
                         <h2>Deja tu comentario:</h2>
-                        <form method="POST" action="{% url 'detalle_post' post.id %}" enctype="multipart/form-data">
+                        <form method="POST" action="{% url 'detalle_post' post.id %}" class="form-control" enctype="multipart/form-data">
                             {% csrf_token %}
                             {{ form_comentario.as_p }}
                             <input type="submit" class="btn btn-primary" value="Enviar Comentario">

@@ -6,7 +6,8 @@ from django.urls import reverse_lazy
 class ContactoUsuario(CreateView):
     template_name = 'contacto/contacto.html'
     form_class = ContactoForm
-    success_url = reverse_lazy('contacto')
+    # Redirige de nuevo al formulario usando el namespace correcto
+    success_url = reverse_lazy('app_contactos:contacto')    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

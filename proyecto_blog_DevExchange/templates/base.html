@@ -56,9 +56,10 @@
            <i class="fas fa-code-branch me-2"></i>DevExchange         
         </a>
         <ul class="nav nav-pills flex-column mb-auto w-100">
-          <li class="nav-item"><a href="{% url 'lista_posts' %}" class="nav-link text-white">Preguntas</a></li>
-          <li class="nav-item"><a href="{% url 'app_contactos:contacto' %}" class="nav-link text-white">Contacto</a></li>
+          <li class="nav-item"><a href="{% url 'lista_posts' %}" class="nav-link text-white">Preguntas</a></li>         
           <li class="nav-item"><a href="{% url 'lista_etiquetas' %}" class="nav-link text-white">Etiquetas</a></li>
+          <li class="nav-item"><a href="{% url 'app_contactos:contacto' %}" class="nav-link text-white">Contacto</a></li>
+          <li class="nav-item"><a href="{% url 'acerca' %}" class="nav-link text-white">Acerca</a></li>
         </ul>
 
         <hr class="text-white-50 w-100">
@@ -79,7 +80,7 @@
           </div>
         {% else %}
           <div class="ps-1 w-100">
-            <a class="btn btn-sm btn-light mb-1 w-100" href="{% url 'login' %}">Iniciar sesión</a>
+            <a class="btn btn-sm btn-outline-light mb-1 w-100" href="{% url 'login' %}">Iniciar sesión</a>
             <a class="btn btn-sm btn-outline-light w-100" href="{% url 'registro' %}">Registrarse</a>
           </div>
         {% endif %}
@@ -89,8 +90,7 @@
       <nav class="navbar navbar-dark bg-primary sticky-top">
         <div class="container-fluid">
           <a class="navbar-brand d-flex align-items-center" href="{% url 'lista_posts' %}">
-            <img src="{% static 'img/logo_devexchange.png' %}" alt="logo" class="brand-small me-2">
-            <span>DevExchange</span>
+             <span>DevExchange</span>
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
             <span class="navbar-toggler-icon"></span>
@@ -104,10 +104,11 @@
           <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <ul class="list-unstyled">
-            <li><a class="d-block py-2" href="{% url 'lista_posts' %}">Preguntas</a></li>
-            <li><a class="d-block py-2" href="{% url 'app_contactos:contacto' %}">Contacto</a></li>
+            <ul class="list-unstyled">
+            <li><a class="d-block py-2" href="{% url 'lista_posts' %}">Preguntas</a></li>            
             <li><a class="d-block py-2" href="{% url 'lista_etiquetas' %}">Etiquetas</a></li>
+            <li><a class="d-block py-2" href="{% url 'app_contactos:contacto' %}">Contacto</a></li>
+            <li><a class="d-block py-2" href="{% url 'acerca' %}">Acerca</a></li>
           </ul>
           <hr>
           {% if user.is_authenticated %}
@@ -158,6 +159,7 @@
               <li><a href="{% url 'lista_posts' %}"><i class="fas fa-question-circle me-1"></i>Preguntas</a></li>
               <li><a href="{% url 'lista_etiquetas' %}"><i class="fas fa-tags me-1"></i>Etiquetas</a></li>
               <li><a href="{% url 'app_contactos:contacto' %}"><i class="fas fa-envelope me-1"></i>Contacto</a></li>
+              <li><a href="{% url 'acerca' %}"><i class="fas fa-info-circle me-1"></i>Acerca</a></li>
             </ul>
           </div>
          

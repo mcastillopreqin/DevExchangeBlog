@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="container mt-5">
+    <h1>Preguntas en la etiqueta: {{ etiqueta.nombre }}</h1>
+    <br>
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <a href="{% url 'detalle_post' post.id %}">{{ post.titulo }}</a>
+                    <p>Publicado por {{ post.autor.username }} el {{ post.fecha_publicacion|date:"d/m/Y H:i" }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay posts en esta etiqueta.</p>
+    {% endif %}
+</div>
+{% endblock contenido %}

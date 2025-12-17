@@ -2,24 +2,22 @@
 {% load crispy_forms_tags %}
 {% load colaborador_tags %}
 {% block contenido  %}
-{% if user.is_superuser or user|has_group:"Colaborador" %}
-<div class="container-fluid" style="margin-top: 100px;">
-   
+{% if user.is_superuser or request.user|has_group:"Colaborador" %}
+    <div class="container-fluid" style="margin-top: 100px;">
         <div  style="margin-top: 300px;">
             <a id="boton_post" class="btn btn-primary" href="{% url 'crear_etiqueta' %}">Crear nueva etiqueta</a>
         </div>
-
-     <h1>Crear Nueva Pregunta</h1>   
-     <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Crear Pregunta</button>
-     </form>
-   
-</div>
+        <h1>Crear Nueva Pregunta</h1>   
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Crear Pregunta</button>
+        </form>   
+    </div>
 {% else % }
     <div class="alert alert-danger mt-5" role="alert">
         No tienes permiso para crear una nueva pregunta, solo usuarios con rol de Colaborador o Administrador pueden hacerlo.
     </div>
 {% endif %}
-{% endblock  %}
+                
+{% endblock contenido %}

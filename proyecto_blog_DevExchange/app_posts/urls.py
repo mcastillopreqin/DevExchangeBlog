@@ -5,6 +5,7 @@ from .views import *
 urlpatterns = [
    path("", views.inicio , name="inicio"),    
    path("lista", views.lista_posts, name="lista_posts"),
+   path("acerca/", views.acerca, name="acerca"),
    # Si se quiere usar la vista basada en clases para listados paginados,
    # podemos mapearla con un nombre distinto. Por ahora mantenemos la
    # vista funcional `lista_posts` usada en las plantillas.

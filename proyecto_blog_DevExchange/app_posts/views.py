@@ -11,6 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import CrearPostForm, ComentarioForm, NuevaEtiquetaForm
 from .models import Post,  Etiqueta, Comentario
+from django.core.paginator import Paginator
+from django.db.models import Count
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 from django.urls import reverse_lazy
 def inicio(request):
@@ -19,12 +21,44 @@ def inicio(request):
     gallery = Post.objects.filter(estado='publicado').exclude(imagen='').exclude(imagen__isnull=True).order_by('-fecha_publicacion')[:8]
     return render(request, 'index.html', {'posts': posts, 'gallery': gallery})
 
+class PostPorEtiquetaListView(ListView):
+    model = Post
+    template_name = "post_por_etiqueta.html"
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        return Post.objects.filter(etiqueta=self.kwargs['pk'], estado='publicado').order_by('-fecha_publicacion')
+
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = CrearPostForm
     template_name = "crear_post.html"
     success_url = reverse_lazy("lista_posts")
 
+class PostListView(ListView):
+    model = Post
+    template_name = "lista_posts.html"
+    context_object_name = "posts"
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        orden = self.request.GET.get('orden')
+        if orden == 'reciente':
+            queryset = queryset.order_by('-fecha_publicacion')
+        elif orden == 'antiguo':
+            queryset = queryset.order_by('fecha_publicacion')
+        elif orden == 'alfabetico':
+            queryset = queryset.order_by('titulo')
+        elif orden == 'votos':
+            queryset = queryset.order_by('-voto_totales')
+        elif orden == 'likes':
+            queryset = queryset.order_by('-total_likes')
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['orden'] = self.request.GET.get('orden', 'reciente')
+        return context
 class PostDetailView(DetailView):
     model = Post
     template_name = "detalle_post.html"
@@ -89,8 +123,33 @@ class EtiquetaDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("lista_etiquetas")
 
 def lista_posts(request):        
-    posts = Post.objects.filter(estado='publicado').order_by('-fecha_publicacion')
-    return render(request, 'lista_posts.html', {'posts': posts})
+    posts_qs = Post.objects
+
+    orden = request.GET.get('orden')
+    if orden == 'reciente':
+        posts_qs = posts_qs.order_by('-fecha_publicacion')
+    elif orden == 'antiguo':
+        posts_qs = posts_qs.order_by('fecha_publicacion')
+    elif orden == 'alfabetico':
+        posts_qs = posts_qs.order_by('titulo')
+    elif orden == 'likes':
+        posts_qs = posts_qs.annotate(likes_count=Count('likes')).order_by('-likes_count')
+    elif orden == 'votos':
+        posts_qs = posts_qs.order_by('-voto_totales')
+    else:
+        posts_qs = posts_qs.order_by('-fecha_publicacion')
+
+    paginator = Paginator(posts_qs, 10)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    borrador_count = Post.objects.filter(estado='borrador').count()
+
+    return render(request, 'lista_posts.html', {
+        'posts': page_obj.object_list,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+        'borrador_count': borrador_count,
+    })
 
  
 class ComentarioCreateView(LoginRequiredMixin, CreateView):
@@ -151,11 +210,5 @@ def like_post(request, post_id):
         post.likes.add(request.user)
     return redirect('detalle_post', post_id=post.id)
 
-
-def eliminar_etiqueta(request, etiqueta_id):
-    etiqueta = get_object_or_404(Etiqueta, id=etiqueta_id)
-    if request.method == 'POST':
-        etiqueta.delete()
-        return redirect('lista_posts')
-    
-    return render(request, 'etiquetas/eliminar_etiqueta.html', {'etiqueta': etiqueta})
+def acerca(request):
+    return render(request, 'acerca.html')

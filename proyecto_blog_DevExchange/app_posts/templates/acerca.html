@@ -1,0 +1,50 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block contenido %}
+  <div class="container">
+    <h1 class="mb-4">Acerca de DevExchange</h1>
+
+    <p class="lead">DevExchange es una plataforma colaborativa diseñada para que desarrolladores y entusiastas compartan preguntas, respuestas y recursos técnicos con claridad y calidad.</p>
+
+    <div class="row">
+      <div class="col-md-8">
+        <h4>Objetivo</h4>
+        <p>Facilitar la creación y difusión de conocimiento técnico mediante preguntas bien formuladas, respuestas verificables y recursos prácticos que ayuden a resolver problemas reales de desarrollo.</p>
+
+        <h4>Qué puedes encontrar</h4>
+        <ul>
+          <li>Preguntas y respuestas sobre programación, frameworks y buenas prácticas.</li>
+          <li>Etiquetas para filtrar contenido por tecnología.</li>
+          <li>Votación y sistema de likes para destacar las mejores respuestas.</li>
+        </ul>
+
+        <h4>Cómo contribuir</h4>
+        <p>Para contribuir crea una cuenta y participa publicando preguntas claras, ofreciendo respuestas detalladas, y manteniendo el respeto en las interacciones. Si quieres proponer mejoras al sitio o colaborar en el código, contacta a los administradores (enlace abajo) o haz un fork del repositorio si está disponible públicamente.</p>
+
+        <h4>Equipo</h4>
+        <p>Proyecto mantenido por la comunidad. Los administradores y colaboradores ayudan a moderar el contenido y mejorar la plataforma.</p>
+
+        <h4>Licencia y privacidad</h4>
+        <p class="small text-muted">El contenido publicado por los usuarios puede estar sujeto a la licencia elegida al publicar. Revisa las políticas del sitio para detalles sobre privacidad y uso de datos.</p>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5>Contacto</h5>
+            <p>¿Tienes sugerencias o quieres colaborar?</p>
+            <a href="{% url 'app_contactos:contacto' %}" class="btn btn-primary btn-sm">Contáctanos</a>
+            <hr>
+            <h6>Repositorio</h6>
+            <p class="small">Enlace para contribuir al código.</p>
+            <a href="https://github.com/mcastillopreqin/DevExchangeBlog" class="btn btn-secondary btn-sm">Ver en GitHub</a>
+
+            <h6 class="mt-3">Soporte</h6>
+            <p class="small text-muted">Si encuentras un problema técnico o bug, por favor reportalo usando el enlace de contacto o vía el repositorio.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock contenido %}

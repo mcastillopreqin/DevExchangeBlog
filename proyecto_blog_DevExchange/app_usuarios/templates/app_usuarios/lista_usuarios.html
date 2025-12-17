@@ -13,7 +13,7 @@
 	{% endif %}
 
 	{% if usuarios %}
-		<table class="table">
+		<table class="table table-striped">
 			<thead>
 				<tr>
 					<th>Usuario</th>
@@ -34,11 +34,8 @@
 						<td>{{ usuario.date_joined|date:"d/m/Y H:i" }}</td>
 						<td>
                             {% if user.is_superuser or user|has_group:"Colaborador" %}
-							<a class="btn btn-sm btn-secondary" href="{% url 'eliminar_usuario' usuario.pk %}">Ver / Eliminar</a>							
 							<form action="{% url 'eliminar_usuario' usuario.pk %}" method="post" style="display:inline;">
-								{% csrf_token %}
-								<input type="hidden" name="eliminar_comentarios" value="" />
-								<input type="hidden" name="eliminar_posts" value="" />
+								{% csrf_token %}								
 								<button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
 							</form>
                             {% else %}

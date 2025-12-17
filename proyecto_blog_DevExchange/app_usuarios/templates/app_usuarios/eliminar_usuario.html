@@ -4,7 +4,7 @@
 {% block contenido %}
 
 <div class="container mt-5">
-    {% if user.is_superuser or es_colaborador %}
+    {% if user.is_superuser or user|has_group:"Colaborador" %}
     <div class="container-fluid" style="margin:400px" >
         <h2>Eliminar Usuario: {{ object.username }}</h2>
          <p>¿Estás seguro de que deseas eliminar este usuario "{{ object.username }}" ?</p><br>

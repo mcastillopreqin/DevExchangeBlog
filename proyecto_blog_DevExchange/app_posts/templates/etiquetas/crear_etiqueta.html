@@ -2,16 +2,17 @@
 {% load crispy_forms_tags %}
 {% block contenido  %}
 
-<div class="container-fluid" style="margin-top: 100px;">
-    <div class="container-fluid" style="margin: 200px;">
+<div class="container mt-5">
+    <div class="row justify-content-center">
         <h1>Crear Nueva Etiqueta</h1>   
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST"  enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}
             <button type="submit" class="btn btn-primary">Crear Etiqueta</button>
         </form>
         <div class="container-fluid" style="margin-top: 20px;">
             <a id="boton_post"  href="{% url 'lista_etiquetas' %}">Listar todas las etiquetas</a>
+        </div>
     </div>
 </div>
 {% endblock contenido %}
