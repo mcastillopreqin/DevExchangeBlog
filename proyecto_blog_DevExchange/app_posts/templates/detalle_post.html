@@ -22,7 +22,7 @@
 
             <div class="imagen-post mb-4">
                 {% if post.imagen %}
-                    <img src="{{ post.imagen.url }}" alt="Imagen del post" class="img-fluid mb-3" />
+                    <img src="{{ post.imagen.url }}" alt="Imagen del post" class="img-fluid mb-3" width="200px"/>
                 {% else %}
                     <p class="text-muted">No hay imagen disponible para este post.</p>
                 {% endif %}

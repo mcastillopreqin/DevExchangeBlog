@@ -19,7 +19,7 @@
         <div class="card h-100 shadow-sm">
           {% if item.imagen %}
             <a href="{% url 'detalle_post' item.id %}">
-              <img src="{{ item.imagen.url }}" class="card-img-top" alt="{{ item.titulo }}">
+              <img src="{{ item.imagen.url }}" class="card-img-top" alt="{{ item.titulo }}" width="200px">
             </a>
           {% else %}
             <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Sin imagen">
