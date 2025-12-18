@@ -1,1 +1,2 @@
-proyecto de integracion del informatorio
+proyecto de integracion del informatorio DevExchange
+Realizo por Marcos Castillo
